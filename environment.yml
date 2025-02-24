@@ -1,0 +1,21 @@
+name: fababean_env
+channels:
+  - defaults
+  - conda-forge
+
+dependencies:
+  - pip
+  - numpy
+  - pandas
+  - matplotlib
+  - seaborn
+  - git
+  - pip:
+      - scikit-learn
+      - supervision
+      - opencv-python
+      - scikit-image
+      - openpyxl
+      - torch
+      - torchvision
+      - torchaudio --index-url https://download.pytorch.org/whl/cu118
