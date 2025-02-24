@@ -1,145 +1,174 @@
-[]([url](url))# WGRF Faba beans Image Classification Pipeline
+# Faba bean feature extraction pipeline from WGRF-faba bean images
 
-- Repository to store code and files related to image work
+## Overview
+This work provides a workflow for running faba bean feature extraction pipeline to extract the dimensional, shape and color of faba bean seeds in the .csv file from the faba bean images. It presents a methodology for seed image segmentation and feature extraction using advanced deep learning and image processing techniques. The Segment Anything Model 2.1 (SAM2.1) has been used for precise segmentation, while OpenCV, Scikit-Image, and Colormath are employed to analyze the dimensional, spatial, shape, and color properties of segmented seeds. The pipeline also gives the seed count in an image and annotated binary images. The pipeline has been specifically developed based on the spatial coordinates of faba bean seeds, colorcard, label, ruler and coin.
 
-### **Introduction:**
-The current work involves constructing of image classification pipeline to use faba bean images as the input file, to extract the features from them and make accurate class predictions based on deep learning models. This work involves the use of different machine learning and deep learning models such as SegmentAnything (SAM), OpenCV, Sci-kit, supervision and CNN classification. 
-The novelty of this work lies in the utilization of SegmentAnything for image segmentation. While researchers have traditionally relied on OpenCV and scikit-image libraries for segmentation tasks, this study leverages SegmentAnything to produce high-quality masks. 
-
-### **SegmentAnything:**
-The Segment Anything Model (SAM) excels at generating high-quality object masks from input prompts like points or boxes and can produce masks for all objects within an image. Trained on a vast dataset of 11 million images and 1.1 billion masks, SAM demonstrates robust zero-shot performance across various segmentation tasks.
-This innovative approach ensures more precise and detailed segmentation, marking a significant advancement over conventional methods.
-
-![Feature_Extraction Flowchart](https://001gc-my.sharepoint.com/:i:/r/personal/harpreet_bargota_agr_gc_ca/Documents/Pictures/Picture1.jpg?csf=1&web=1&e=a115Gl?raw=true "Title")
-
-### **Current Status:**
-Currently, 254 images of fava beans (Vicia faba) provided by Dr. Nicholas Larkan have been used/tested for development of an image analysis pipeline for extracting 14 Dimensional features (Area, Perimeter, MajorAxisLength, MinorAxisLength, ConvexArea, EquivDiameter, Extent, Solidity, Eccentricity, Aspect ratio, Compactness, Roundness) and 4 shape factors (Shapefactor1-4) from images. For using SegmentAnything for this pipeline, initially some research work was done for comparing the segmenatation stratesies of SAM and other conventional libraries as OpenCV and Sci-kit. Furthermore, to test the effeciacy of different segmentation approaches in SAM, some research tests were done to conclude the utilization of automatic mask generation method of SAM to be used for segmentation purposes. 
-
-### **Installation:**
-This work is being done at Lethbridge Superdome and AWS Phenomics sandbox.
-
-### Lethbridge superdome
-(Section 1) For using SegmentAnything, GPUs with cuda are highly recommended. For using Lethbridge superdome, follow the instructions as:
-1.	Connect to the AAFC network - either directly or by GCSRA/VPN
-2.	Open the VS Code (Visual Studio Code) pre-installed in your localApps folder (no IT support required)
-3.	For logging into the Lethbridge superdome server, “connect to the host” and use username and password to log in
-4.	For installing the conda environment, follow the steps below:
-Step 1: Install Conda (if not already installed)
-If you don't have Conda installed, you can install Miniconda for a lightweight installation. Download Miniconda Installer:
-```
-wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
-```
-1.	Run the Installer:
-```
-bash Miniconda3-latest-Linux-x86_64.sh
-```
-2.	Follow the Installation Prompts:
-o	Review the license agreement by pressing Enter.
-o	Accept the license terms by typing yes.
-o	Choose the installation location (default is usually fine).
-o	Allow the installer to initialize Miniconda by typing yes.
-3.	Initialize Conda:
-```
-source miniconda3/bin/activate
-```
-Step 2: Create a Conda Environment
-1.	Create a New Conda Environment:
-```
-conda create --name myenv
-```
-Replace myenv with your desired environment name.
-2.	Specify Python Version (optional):
-```
-conda create --name myenv python=3.10
-```
-This command creates an environment named myenv with Python version 3.10
-Step 3: Activate the Conda Environment
-```
-conda activate myenv
-```
-Step 4: Install Packages in the Environment
-```
-conda install numpy pandas matplotlib
-conda install git
-pip install git+https://github.com/facebookresearch/segment-anything.git
-pip3 install opencv-python
-pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118 
-pip install -U scikit-image
-pip install supervision
-wget https://dl.fbaipublicfiles.com/segment_anything/sam_vit_h_4b8939.pth
-pip3 install --upgrade opencv-python
-pip install pandas
-conda install seaborn
-pip install openpyxl
-```
-
-Step 5: Type 'nano <Human Readable>.py' in the Command line. Here we are using the nano editor, any other editor could also be used to save the data.
-Step 6: Copy the python code for the specific analysis and paste it in the <Human Readable>.py file 
-Step 7: The press 'ctrl+o' followed by 'enter'. 
-Step 8: The press 'ctrl+x'
-Step 9: Type python3 <Human Readable>.py.
-
-There are different python files for different analysis.  For extracting the features, use feature_extraction.py. For using command line, paste the code as: 
-```
-python3 feature_extraction.py image/S3-input output_image
-```
-(Note: image/S3-input is the input folder containing all the images to be processed, and output_image is the name of the output folder having the resultant files of .csv features extracted, masks, annotated images and metadata files for each image)
-For comparison studies of SAM, OpenCV and Sci-kit, copy and paste the code (from compare1.py) in the  Type 'nano <Human Readable>.py'. Change the path and name of the image in the code (e.g. image=cv2.read(‘path_to_image’)).
-Step 10: After running the python files, download the output files.
-
-### AWS Phenomics Sandbox
-(Section 2): Currently, for using AWS Phenomics sandbox, CIS Amazon Linux 2 Benchmark - Level 1 EC2 instance and m5.xlarge (4 CPU, 16GB Ram 0.214$/Hour with 50 GB storage is being used in AWS CLOUD Phenomics sandbox for comparison of SAM (point, box, amg) methods.
-
-SUMMARY for feature extraction using SegmentAnything (SAM) and Sci-kit image toolboxes in AWS CLOUD Phenomics sandbox:
-
-1.	Log in to AWS Phenomics sandbox 
-2.	Create an input and output s3 bucket according to Terms of Cloud Naming conventions 
-3.	Secure the buckets by applying Permissions and bucket policy
-4.	Upload the images into S3 input bucket
-5.	Create a custom AMI: IAM Role (with permissions) and IAM Policies
-6.	Create a CIS Amazon Linux 2 Benchmark - Level 1 EC2 instance and m5.xlarge (4 CPU, 16GB Ram 0.214$/Hour with 50 GB storage and apply the security groups.
-7.	Once, the instance is created, start the instance and use Session Manager to connect to the EC2 instance
-8.	Once connected, you will have a linux terminal where you can create, edit and run python files.
-9.	If you logged in successfully, the sh-4.2$ command displays.
-10.	Switch from sh to bash.
-11.	Install Conda, segment_anything (using the installation instructions in the repository), required libraries and packages for data extraction and analysis 
-12.	Make a new directory “SAM” and copy your image “Faba-Seed-CC_Vf1-1-2.JPG” to this current folder.
+## Faba bean Images
+The images of faba beans were captured according to the Standard Operating Protocol (Figure 1).
+![Figure 1](https://gccode.ssc-spc.gc.ca/lethbridge-carsu/wgrf-cloud-phenomics/faba-bean-image-classification/-/blob/main/harpreet_scripts/Images/Faba-Seed-CC_Vf1-1-2.JPG)
+  
+Figure 1. Example of Faba bean images Vf1-1-2 (image shape=6000, 4000, 3) with faba bean seeds, colorcard, coin, label and ruler     
 
 
+## Segmentanything 2.1 (MetaAI) Model used for image segmentation
+Segment Anything Model 2 (SAM 2.1) is an advanced segmentation model designed to work seamlessly with both images and videos, treating a single image as a one-frame video. This work introduces a new task, model, and dataset aimed at improving segmentation performance. SAM 2 trained on SA-V dataset provides strong performance across a wide range of tasks. In image segmentation, SAM2 model is reported to be more accurate and 6 times faster than the Segment Anything Model (SAM). 
 
+## Uniqueness/Novelty
+The novelty of this work lies in the utilization of SegmentAnything 2.1 for image segmentation. While researchers have traditionally relied on OpenCV and scikit-image libraries for segmentation tasks, this study leverages SegmentAnything 2.1 to produce 
+
+## 🔥 A Quick Overview
+![Figure 2](https://gccode.ssc-spc.gc.ca/lethbridge-carsu/wgrf-cloud-phenomics/faba-bean-image-classification/-/blob/main/harpreet_scripts/Images/SAM2.1_Flowchart.png)
+
+## Details of Steps (Figure 2):
+1. Step1: Image/Images are used as input and SAM2.1 model generates the binary masks (.png) and metadata file (.csv) for each image in the Output dir SAM
+2. Step2: The Output dir SAM (from Step2) is used as input for this step and data  analysis, feature extraction using sci-kit image library and feature engineering gives the .csv file with dimensional and shape features in another output dir FE
+3. Step3: Both the output dir FE (from Step2) and the images (used as input in Step1) will be used as input for this step and the color labels and RGB values will be extracted using colormath library to give .csv file in the same Final output dir FE (from Step2).
+
+## Final Output Files
+After running the faba bean feature extraction pipeline, there will be 2 output directories-
+1.	Output dir SAM will contain subfolders (Faba-Seed-CC_Vf_N-N_N) with masks (N.png) and metadata file (metadata.csv) for each image. 
+2.	Output dir FE will contain :
+a.	The .csv file of dimensional and shape features (Fava_bean_Features_extraction.csv)
+b.	The .csv file of dimensional, shape, RGB values and Color names (FE_Color.csv)
+c.	Seed Count (.xlsx) (Seed Count.xlsx)
+d.	Annotated Binary image (.png) with contours around beans (Faba-Seed-CC_Vf_N-N_N_combined_mask.png) 
+
+The features that have been extracted through this pipeline are:
+1.	Dimensional features (19): Area_mm2_SAM,Length_mm_SAM, Width_mm_SAM, perimeter_mm_SAM, centroid-0, centroid-1,  bbox-0, bbox-1, bbox-2, bbox-3, Area_pix_SAM, Eccentricity, equivalent_diameter_area, perimeter, solidity, area_convex, extent, Axis Major Length(pix)_SAM, Axis Minor Length(pix)_SAM, Aspect_Ratio, Roundness, Compactness, Circularity_SAM
+2.	Shape features (4): Shape, Shapefactor1, Shapefactor2, Shapefactor3, Shapefactor4
+3.	Color (2): RGB value, color_seeds
+4.	Seed count: Number of seeds in image
+
+## Prerequisites
+•	Programming Knowledge: Familiarity with Python and Linux
+•	Libraries: PyTorch, OpenCV, Sci-kit image, Numpy, Pandas, Matplotlib, Colormath, and SAM2’s official repository.
+•	Hardware: A GPU with CUDA support is recommended, (but not necessary) for efficient model inference.
+•	Dataset: Faba bean images captured using SOP 
+
+
+## Project Structure
 
 ```
-/bin/bash
-cd /home/ssm-user
-wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
-mkdir /home/ssm-user/tmpconda; TMPDIR=/home/ssm-user/tmpconda bash Miniconda3-latest-Linux-x86_64.sh
-source miniconda3/bin/activate
-conda install git
-pip install git+https://github.com/facebookresearch/segment-anything.git
-pip3 install opencv-python
-pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
-pip install -U scikit-image
-pip install supervision
-wget https://dl.fbaipublicfiles.com/segment_anything/sam_vit_h_4b8939.pth
-pip3 install --upgrade opencv-python
-pip install pandas
-conda install seaborn
-pip install openpyxl
-mkdir images
-aws s3 cp s3://agsg-hkkb-test-input-s3/Faba-Seed-CC_Vf1-1-2.JPG SAM
+project-folder/
+│-- README.md          # Project documentation
+│-- environment.yml    # Conda environment file
+│-- Step1_SAM2.1.py    # Script for generating masks and metadata file using SAM2.1 model on images       
+│-- Step2_SAM2.1.py    # Script for extracting dimensional and shape features of beans and seed count
+│-- Step3_color.py     # Script for extracting color name and RGB value from images
+│-- harpreet_scripts      # Scripts for data analysis and images
 ```
-13.	Type 'nano <Human Readable>.py' in the Command line. Here we are using the nano editor, any other editor could also be used to save the data.
-14.	Copy the code from below for the specific analysis and paste it in the <Human Readable>.py file.
-15.	The press 'ctrl+o' followed by 'enter'.
-16.	The press 'ctrl+x'
-17.	Type python3 <Human Readable>.py.
-18.	After the completion of the run of python3 <Human Readable>.py, use aws sync to transfer result files to output s3 bucket
 
-```
-aws s3 sync SAM s3://agsg-hkkb-test-output-s3
-```
-19.	Terminate the instance and stop the instance after completion of work.
+## Installation
+
+### Using Conda (Recommended)
+
+1. Install [Miniconda](https://docs.conda.io/en/latest/miniconda.html) or [Anaconda](https://www.anaconda.com/).
+2. Create a new Conda environment using environment.yml file 
+a. Navigate to the directory containing environment.yml
+
+   ```bash
+   cd /path/to/environment.yml
+   ```
+b. Run the following command to ensure that defaults is explicitly set in your Conda configuration.
+     ```bash
+   conda config --add channels defaults
+   ```
+c. Create the Conda Environment
+  ```bash
+   conda env create -f environment.yml
+   ```
+d. Activate the environment:
+   ```bash
+   conda activate fababean_env
+   ```
+
+3. Clone SAM 2 Github Repository, checkpoints and Step1_SAM2.1.py 
+
+a.	Clone SAM 2 github repository and download the checkpoints by running the commands as:
+  ```bash
+   git clone https://github.com/facebookresearch/sam2.git && cd sam2
+   pip install -e .
+   cd checkpoints && \
+   ./download_ckpts.sh && \
+   cd ..
+   ```
+b.	Copy the python script in the sam2 directory
+
+    ```bash
+   cp ../Step1_SAM2.1.py .
+   ```
+c.	change the directory to the parent directory
+
+  ```bash
+   cd ..
+   ```
+
+## Usage   
+
+4. For running the pipeline, follow the steps 1-3 
+
+Step1: Generation of binary masks from images folder
+
+Python script Step1_SAM2.1.py takes the images as input and generates the binary masks (.png) and metadata .csv file for each image using SAM2.1 model in the output directory. Run the following command for generating masks and metadata file
+
+ ```bash
+   python sam2/Step1_SAM2.1.py input_dir <nameofinputdir> output_dir <nameofoutputdir>
+   ```
+5. Step2: Extraction of dimensional and shape features (.csv file) and seed count (.xlsx file) from binary masks and metdata file from the output of Step1: 
+The python script (Step2_SAM2.1.py) uses the binary masks and metadata (from output of Step1) as input and generates the .csv file of dimensional & shape features and binary annotated combined masks (.png) as output in another output folder. Run the following command for generating the output files:
+
+  ```bash
+   python Step2_SAM2.1.py <nameofoutputdir> <nameofnewoutputdir>
+   ```
+
+Note: <nameofoutputdir> is the directory with binary masks and metadata file while <nameofnewoutputdir> should be the name of new output directory which will contain the .csv file of dimensional & shape features, seed count and annotated binary images
+
+6. Step3: Color extraction from images and features extraction files
+The python script (Step3_color.py), takes the .csv file of dimensional and shape features and images as inputs to generate output as feature extraction containing the dimensional, shape features, RGB values and color in the .csv file. 
+
+ ```bash
+   python Step3_color.py < image_or_folder> <nameofnewoutputdir>
+   ```
 
 
+### CLI : Example for running steps (Step1,2 and 3) of pipeline:
+•	faba_images: Input directory of images
+•	output_SAM: Output dir with masks and metadata file
+•	output_FE: Output dir with dimensional & shape features, color RGB values, Color label, seed count (.csv, .xlsx)
+
+Run the CLI as:
+
+```bash
+   python sam2/Step1_SAM2.1.py input_dir faba_images output_dir output_SAM
+
+    python Step2_SAM2.1.py output_SAM output_FE
+
+    python Step3_color.py faba_images output_FE
+
+   ```
+
+
+
+## Dependencies
+
+The project requires the following dependencies:
+
+- Segmentanything 2.1 
+- Python (>=3.8)
+- OpenCV (`opencv-python`)
+- Scikit-learn
+- NumPy
+- Pandas
+- Matplotlib
+- Seaborn
+- git
+- pip
+- supervision
+- openpyxl
+- torch
+- torchvision
+- torchaudio --index-url https://download.pytorch.org/whl/cu118
+
+These dependencies are included in `environment.yml`.
 
 
