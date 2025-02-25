@@ -6,7 +6,7 @@ This work provides a workflow for running faba bean feature extraction pipeline 
 ### Faba bean Images
 The images of faba beans were captured according to the Standard Operating Protocol (Figure 1).
 
-<img src="https://gccode.ssc-spc.gc.ca/lethbridge-carsu/wgrf-cloud-phenomics/faba-bean-image-classification/-/raw/main/harpreet_scripts/Images/Faba-Seed-CC_Vf1-1-2.JPG" alt="Figure 1" width="700">
+<img src="https://gccode.ssc-spc.gc.ca/lethbridge-carsu/wgrf-cloud-phenomics/faba-bean-image-classification/-/raw/main/harpreet_scripts/Images/Faba-Seed-CC_Vf1-1-2.JPG" alt="Figure 1" width="200">
 
 Figure 1. Example of Faba bean images Vf1-1-2 (image shape=6000, 4000, 3) with faba bean seeds, colorcard, coin, label and ruler     
 
@@ -21,7 +21,7 @@ The novelty of this work lies in the utilization of SegmentAnything 2.1 for imag
 
 ## 🔥 A Quick Overview
 
-<img src="https://gccode.ssc-spc.gc.ca/lethbridge-carsu/wgrf-cloud-phenomics/faba-bean-image-classification/-/raw/main/harpreet_scripts/Images/SAM2.1_Flowchart.png" alt="Figure 2" width="500">
+<img src="https://gccode.ssc-spc.gc.ca/lethbridge-carsu/wgrf-cloud-phenomics/faba-bean-image-classification/-/raw/main/harpreet_scripts/Images/SAM2.1_Flowchart.png" alt="Figure 2" width="700">
 
 Figure 2: Flowchart for Faba bean feature extraction pipeline
 
