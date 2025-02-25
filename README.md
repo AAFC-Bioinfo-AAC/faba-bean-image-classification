@@ -23,8 +23,9 @@ The novelty of this work lies in the utilization of SegmentAnything 2.1 for imag
 
 <img src="https://gccode.ssc-spc.gc.ca/lethbridge-carsu/wgrf-cloud-phenomics/faba-bean-image-classification/-/raw/main/harpreet_scripts/Images/SAM2.1_Flowchart.png" alt="Figure 2" width="800">
 
+Figure 2: Flowchart for Faba bean feature extraction pipeline
 
-## 📝 Details of Steps (Figure 2):
+## 📝 Details of Steps **(Figure 2)**:
 
 1. **Step1:** Image/Images are used as input and SAM2.1 model generates the binary masks (.png) and metadata file (.csv) for each image in the Output dir SAM
 
