@@ -21,7 +21,7 @@ The novelty of this work lies in the utilization of SegmentAnything 2.1 for imag
 
 ## 🔥 A Quick Overview
 
-<img src="https://gccode.ssc-spc.gc.ca/lethbridge-carsu/wgrf-cloud-phenomics/faba-bean-image-classification/-/raw/main/harpreet_scripts/Images/SAM2.1_Flowchart.png" alt="Figure 2" width="1000">
+<img src="https://gccode.ssc-spc.gc.ca/lethbridge-carsu/wgrf-cloud-phenomics/faba-bean-image-classification/-/raw/main/harpreet_scripts/Images/SAM2.1_Flowchart.png" alt="Figure 2" width="800">
 
 Figure 2: Flowchart for Faba bean feature extraction pipeline
 
