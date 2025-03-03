@@ -223,13 +223,13 @@ def process_SAMmasks(SAM_masks, output_folder):
                                 print(f"Combined mask saved at: {output_file_path}")
 
                                    # Generate the output file name using the subfolder name for mask
-                                output_file_name = f"{subfolder_name}_mask.png"
+                                # output_file_name = f"{subfolder_name}_mask.png"
 
                                 # Construct the full path for saving
-                                output_file_path = os.path.join(output_folder, output_file_name)
+                                # output_file_path = os.path.join(output_folder, output_file_name)
                                   # Save the combined mask to the output folder
-                                cv2.imwrite(output_file_path, combined_mask)
-                                print(f"Combined binary mask saved at: {output_file_path}")
+                                # cv2.imwrite(output_file_path, combined_mask)
+                                # print(f"Combined binary mask saved at: {output_file_path}")
        
                                 
 #Label the mask
