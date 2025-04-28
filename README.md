@@ -19,7 +19,7 @@ Figure 1. Example of Faba bean images Vf1-1-2 (image shape=6000, 4000, 3) with f
 
 ## 💡 Uniqueness/Novelty
 
-The novelty of this work lies in the utilization of SegmentAnything 2.1 for image segmentation. While researchers have traditionally relied on OpenCV and scikit-image libraries for segmentation tasks, this study leverages SegmentAnything 2.1 to produce 
+The novelty of this work lies in the utilization of SegmentAnything 2.1 for image segmentation. While researchers have traditionally relied on OpenCV and scikit-image libraries for segmentation tasks, this study leverages SegmentAnything 2.1 to generate binary masks and metadata file which have been leveraged further for feature extraction from faba bean images. 
 
 ## 🔥 A Quick Overview
 
