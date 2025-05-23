@@ -249,7 +249,7 @@ def process_SAMmasks(SAM_masks, output_folder):
                                 df_FE = df_FE.assign(Aspect_Ratio=lambda x:(x["axis_major_length"]/x["axis_minor_length"]))
                                 df_FE = df_FE.assign(Roundness=lambda x:((4*3.14*(x["area"]))/((x["perimeter"])**2)))
                                 df_FE = df_FE.assign(Compactness=lambda x:(x["equivalent_diameter_area"]/x["axis_major_length"]))
-                                df_FE["Circularity_SAM"] = (1/(df_FE["Roundness"]))
+                                df_FE["Circularity-SAM"] = (1/(df_FE["Roundness"]))
                                 
                                 #Shape features using MAthematical operations
                                 df_FE= df_FE.assign(Shapefactor1=lambda x: (x["axis_major_length"]/x["area"]))
@@ -304,15 +304,17 @@ def process_SAMmasks(SAM_masks, output_folder):
                         df_total.append(df_FE2)
                 df_image=pd.concat(df_total)
                 df_image['Shape']=df_image.apply(classify_shape, axis=1)
-                df_image = df_image.loc[:, ['class','Area_mm2_SAM', 'Length_mm_SAM', 'Width_mm_SAM', 'perimeter_mm_SAM', 'Shape', 'centroid-0', 'centroid-1',
+                df_image = df_image.loc[:, ['class','Area_mm2_SAM', 'Length_mm_SAM', 'Width_mm_SAM', 'perimeter_mm_SAM',  'centroid-0', 'centroid-1',
                                               'bbox-0', 'bbox-1', 'bbox-2', 'bbox-3', 'area', 'eccentricity', 'equivalent_diameter_area', 
                                               'perimeter', 'solidity', 'area_convex', 'extent', 'axis_major_length', 'axis_minor_length', 
-                                              'Aspect_Ratio','Roundness', 'Compactness', 'Circularity_SAM','Shapefactor1', 'Shapefactor2','Shapefactor3', 
+                                              'Aspect_Ratio','Roundness', 'Compactness', 'Circularity-SAM','Shape','Shapefactor1', 'Shapefactor2','Shapefactor3', 
                                               'Shapefactor4']]
-                df_image.rename(columns={'class': 'Class', 'eccentricity':'Eccentricity', 
-                                        'area':'Area_pix_SAM', 'eccentricity':'Eccentricity', 'axis_major_length':'Axis Major Length(pix)_SAM',  
-                                        'axis_minor_length':'Axis Minor Length(pix)_SAM'}, 
-                                        inplace=True)
+                df_image.rename(columns={'class': 'Class', 'Area_mm2_SAM':'Area-SAM(mm2)','Length_mm_SAM':'Length-SAM(mm)', 'Width_mm_SAM':'Width-SAM(mm)', 
+                                         'perimeter_mm_SAM': 'Perimeter-SAM(mm)', 'area':'Area-SAM(pix)','eccentricity':'Eccentricity', 
+                                         'equivalent_diameter_area':'Equivalent diameter area', 'perimeter':'Perimeter (pix)','solidity':'Solidity',
+                                         'area_convex':'Area convex','extent':'Extent','axis_major_length':'Axis Major Length-SAM(pix)',  
+                                        'axis_minor_length':'Axis Minor Length-SAM(pix)','Aspect_Ratio':'Aspect Ratio'},inplace=True)
+                                                                    
                 df_image.index.names = ['Seed No. per image']
                 print (df_image)
                 count_seed=df_image.value_counts("Class").to_frame()
