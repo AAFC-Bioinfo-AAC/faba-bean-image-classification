@@ -1,5 +1,7 @@
-[version de ce document en français](./README-FR.md)
-[installation and usage instructions](/instructions.md)
+[version de ce document en français](./README-FR.md)  
+
+[installation and usage instructions](/instructions.md)  
+
 
 # Faba bean feature extraction pipeline from WGRF-faba bean images
 

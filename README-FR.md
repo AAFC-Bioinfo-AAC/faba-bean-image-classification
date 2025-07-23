@@ -1,6 +1,7 @@
-[English version of this document](./README.md)
+[English version of this document](./README.md)  
 
-[instructions pour l'installation et l'utilisation](/instructions.md)
+[instructions pour l'installation et l'utilisation](/instructions.md)  
+
 
 # Pipeline d'extraction de caractéristiques de féverole à partir d'images WGRF-féverole
 
