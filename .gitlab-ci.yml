@@ -11,3 +11,19 @@ sast:
   stage: test
 include:
 - template: Security/SAST.gitlab-ci.yml
+
+secret_scan:
+  timeout: 2m
+  stage: .pre
+  image:
+    name: trufflesecurity/trufflehog:latest
+    entrypoint: ["/bin/sh", "-c"]
+  cache: {}
+  variables:
+    GIT_STRATEGY: fetch
+    GIT_DEPTH: 0
+    GIT_FETCH_EXTRA_FLAGS: "--prune --no-tags +refs/heads/$CI_DEFAULT_BRANCH:refs/remotes/origin/$CI_DEFAULT_BRANCH +refs/merge-requests/*/head:refs/merge-requests/*"
+  before_script:
+    - git config --global --add safe.directory '*'
+  script:
+    - trufflehog git --since-commit "$CI_DEFAULT_BRANCH" --branch "$CI_COMMIT_REF_NAME" --fail file://.
