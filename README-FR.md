@@ -13,7 +13,7 @@ Ce code est une pipeline d'extraction des caractéristiques de féverole afin d'
 
 Les images des féveroles ont été prises conformément au protocole d'exploitation normalisé (figure 1).
 
-<img src="https://gccode.ssc-spc.gc.ca/lethbridge-carsu/wgrf-cloud-phenomics/faba-bean-image-classification/-/raw/main/harpreet_scripts/Images/Faba-Seed-CC_Vf1-1-2.JPG" alt="Figure 1" width="200">
+<img src="./harpreet_scripts/Images/Faba-Seed-CC_Vf1-1-2.JPG" alt="Figure 1" width="200">
 
 Graphique 1. Exemple d'images de féverole Vf1-1-2 (forme de l'image = 6000, 4000, 3) avec graines de féverole, carte de couleur, pièce de monnaie, étiquette et règle 
 
@@ -23,7 +23,7 @@ Graphique 1. Exemple d'images de féverole Vf1-1-2 (forme de l'image = 6000, 400
 
 ## 🔥 Un aperçu rapide
 
-<img src="https://gccode.ssc-spc.gc.ca/lethbridge-carsu/wgrf-cloud-phenomics/faba-bean-image-classification/-/raw/main/harpreet_scripts/Images/SAM2.1_Flowchart.png" alt="Figure 2" width="800">
+<img src="./harpreet_scripts/Images/SAM2.1_Flowchart.png" alt="Figure 2" width="800">
 
 Figure 2 : Organigramme du pipeline d'extraction des caractéristiques de la féverole
 
