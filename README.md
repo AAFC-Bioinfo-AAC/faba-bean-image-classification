@@ -13,7 +13,7 @@ This work provides a workflow for running faba bean feature extraction pipeline 
 
 The images of faba beans were captured according to the Standard Operating Protocol (Figure 1).
 
-<img src="./harpreet_scripts/Images/Faba-Seed-CC_Vf1-1-2.JPG" alt="Figure 1" width="800">
+<img src="./harpreet_scripts/Images/Faba-Seed-CC_Vf1-1-2.JPG" alt="Figure 1" width="200">
 
 Figure 1. Example of Faba bean images Vf1-1-2 (image shape=6000, 4000, 3) with faba bean seeds, colorcard, coin, label and ruler     
 
@@ -55,6 +55,7 @@ The features that have been extracted through this pipeline are:
 2.	**Shape features (4)**: Shape, Shapefactor1, Shapefactor2, Shapefactor3, Shapefactor4
 3.	**Color (2)**: RGB value, color_seeds
 4.	**Seed count**: Number of seeds in image
+
 
 
 
