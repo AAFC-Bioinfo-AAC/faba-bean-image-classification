@@ -58,7 +58,7 @@ The features that have been extracted through this pipeline are:
 
 ## 🙏 Acknowledgements
 
-•	We extend our sincere appreciation to our mentors, collaborators, and colleagues at Agriculture and Agri-Food Canada (AAFC) for their continued guidance, support, and valuable contributions throughout this project:
+🤝 We extend our sincere appreciation to our mentors, collaborators, and colleagues at Agriculture and Agri-Food Canada (AAFC) for their continued guidance, support, and valuable contributions throughout this project:
 
 •	Rodrigo Ortega Polo – Project Lead and Biology Study Leader (Bioinformatics), Lethbridge Research and Development Centre, AAFC
 
@@ -80,7 +80,8 @@ The features that have been extracted through this pipeline are:
 
 •	Parisa Daeijvad – Ph.D. Research Student, Lethbridge Research and Development Centre, AAFC
 
-•	We also gratefully acknowledge the Western Grains Research Foundation (WGRF), Canada, for their funding and support, which made this work possible.
+🌾We also gratefully acknowledge the Western Grains Research Foundation (WGRF), Canada, for their funding and support, which made this work possible.
+
 
 
 
