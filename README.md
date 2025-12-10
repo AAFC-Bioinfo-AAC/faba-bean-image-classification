@@ -48,13 +48,15 @@ After running the faba bean feature extraction pipeline, there will be 2 output 
 a.	The .csv file of dimensional and shape features (Fava_bean_Features_extraction.csv)
 b.	The .csv file of dimensional, shape, RGB values and Color names (FE_Color.csv)
 c.	Seed Count (.xlsx) (Seed Count.xlsx)
-d.	Annotated Binary image (.png) with contours around beans (Faba-Seed-CC_Vf_N-N_N_combined_mask.png) 
+d.	Annotated Binary image (.png) with contours around beans (Faba-Seed-CC_Vf_N-N_N_combined_mask.png)
+e.  corrected_images with the color calibrated images (Faba-Seed-CC_Vf_N-N_N.JPG)
 
 The features that have been extracted through this pipeline are:
-1.	**Dimensional features (19)**: Area_mm2_SAM,Length_mm_SAM, Width_mm_SAM, perimeter_mm_SAM, centroid-0, centroid-1,  bbox-0, bbox-1, bbox-2, bbox-3, Area_pix_SAM, Eccentricity, equivalent_diameter_area, perimeter, solidity, area_convex, extent, Axis Major Length(pix)_SAM, Axis Minor Length(pix)_SAM, Aspect_Ratio, Roundness, Compactness, Circularity_SAM
+1.	**Dimensional features (19)**: Area_mm2_SAM,Length_mm_SAM, Width_mm_SAM, perimeter_mm_SAM, Area-SAM_taubin(mm2), Length-SAM_taubin(mm), Width-SAM_taubin(mm), Perimeter-SAM_taubin(mm), Area-SAM_minEnc(mm2), Length-SAM_minEnc(mm), Width-SAM_minEnc(mm), Perimeter-SAM_minEnc(mm), centroid-0, centroid-1,  bbox-0, bbox-1, bbox-2, bbox-3, Area_pix_SAM, Eccentricity, equivalent_diameter_area, perimeter, solidity, area_convex, extent, Axis Major Length(pix)_SAM, Axis Minor Length(pix)_SAM, Aspect_Ratio, Roundness, Compactness, Circularity_SAM
 2.	**Shape features (4)**: Shape, Shapefactor1, Shapefactor2, Shapefactor3, Shapefactor4
 3.	**Color (2)**: RGB value, color_seeds
 4.	**Seed count**: Number of seeds in image
+
 
 
 
