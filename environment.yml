@@ -14,6 +14,7 @@ dependencies:
       - scikit-learn
       - opencv-python
       - scikit-image
+      - circle-fit
       - openpyxl
       - torch
       - torchvision
