@@ -58,9 +58,21 @@ The features that have been extracted through this pipeline are:
 
 ## 🙏 Acknowledgements
 
-We sincerely thank our mentors and collaborators at Agriculture and Agri-food Canada (AAFC) for their guidance, support, and invaluable insights throughout this project: Rodrigo Ortega Polo (Project Lead/Biology Study Leader-Bioinformatics), Nathaniel Lim (Acting Project Manager), Nicholas Larkan (Research Scientist), Etienne Low-Decarie (Manager, BICOE), Jackson Eyres (Team Lead-BICOE), Mathew Richards (Bioinformatics Programmer), Xiaohui Yang (Project Co-Lead), Harpreet Kaur Bargota (Bioinformatics Programmer Analyst/Biologist), Hao Nan Tobey Wang (Research Biologist), Parisa Daeijvad (Ph.D Research Student) and Trista Cormier (Research Assistant).
+•	We extend our sincere appreciation to our mentors, collaborators, and colleagues at Agriculture and Agri-Food Canada (AAFC) for their continued guidance, support, and valuable contributions throughout this project:
+•	Rodrigo Ortega Polo – Project Lead and Biology Study Leader (Bioinformatics), Lethbridge Research and Development Centre, AAFC
+•	Nathaniel Lim – Acting Project Manager, AAFC
+•	Xiaohui Yang – Project Co-Lead, Lethbridge Research and Development Centre, AAFC
+•	Nicholas Larkan – Research Scientist (Pulse Crop Genomics), Saskatoon Research and Development Centre, AAFC
+•	Etienne Low-Decarie – Manager, Biological Informatics Centre of Excellence (BICoE), AAFC
+•	Jackson Eyres – Bioinformatics Team Lead (BICoE) and Supervisor, AAFC
+•	Mathew Richards – Bioinformatics Programmer, Lethbridge Research and Development Centre, AAFC
+•	Harpreet Kaur Bargota – Bioinformatics Programmer Analyst/Biologist, Lethbridge Research and Development Centre, AAFC
+•	Hao Nan Tobey Wang – Research Biologist, Lethbridge Research and Development Centre, AAFC
+•	Parisa Daeijvad – Ph.D. Research Student, Lethbridge Research and Development Centre, AAFC
 
-We also gratefully acknowledge the Western Grains Research Foundation (WGRF), Canada, for funding and supporting this work.
+•	We also gratefully acknowledge the Western Grains Research Foundation (WGRF), Canada, for their funding and support, which made this work possible.
+
+
 
 
 
