@@ -59,18 +59,29 @@ The features that have been extracted through this pipeline are:
 ## 🙏 Acknowledgements
 
 •	We extend our sincere appreciation to our mentors, collaborators, and colleagues at Agriculture and Agri-Food Canada (AAFC) for their continued guidance, support, and valuable contributions throughout this project:
+
 •	Rodrigo Ortega Polo – Project Lead and Biology Study Leader (Bioinformatics), Lethbridge Research and Development Centre, AAFC
+
 •	Nathaniel Lim – Acting Project Manager, AAFC
+
 •	Xiaohui Yang – Project Co-Lead, Lethbridge Research and Development Centre, AAFC
+
 •	Nicholas Larkan – Research Scientist (Pulse Crop Genomics), Saskatoon Research and Development Centre, AAFC
+
 •	Etienne Low-Decarie – Manager, Biological Informatics Centre of Excellence (BICoE), AAFC
+
 •	Jackson Eyres – Bioinformatics Team Lead (BICoE) and Supervisor, AAFC
+
 •	Mathew Richards – Bioinformatics Programmer, Lethbridge Research and Development Centre, AAFC
+
 •	Harpreet Kaur Bargota – Bioinformatics Programmer Analyst/Biologist, Lethbridge Research and Development Centre, AAFC
+
 •	Hao Nan Tobey Wang – Research Biologist, Lethbridge Research and Development Centre, AAFC
+
 •	Parisa Daeijvad – Ph.D. Research Student, Lethbridge Research and Development Centre, AAFC
 
 •	We also gratefully acknowledge the Western Grains Research Foundation (WGRF), Canada, for their funding and support, which made this work possible.
+
 
 
 
