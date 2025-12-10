@@ -1,7 +1,7 @@
 ### Prerequisites
 •	**Programming Knowledge**: Familiarity with Python and Linux
 
-•	**Libraries**: PyTorch, OpenCV, Sci-kit image, Numpy, Pandas, Matplotlib, and SAM2’s official repository.
+•	**Libraries**: PyTorch, OpenCV, Sci-kit image, Numpy, Pandas, Matplotlib, Circle-fit and SAM2’s official repository.
 
 •	**Hardware**: A GPU with CUDA support is recommended, (but not necessary) for efficient model inference.
 
@@ -99,7 +99,7 @@ Step1: Generation of binary masks from images folder
 Python script Step1_SAM2.1.py takes the images as input and generates the binary masks (.png) and metadata .csv file for each image using SAM2.1 model in the output directory. Run the following command for generating masks and metadata file
 
    ```bash
-   python sam2/Step1_SAM2.1.py input_dir <nameofinputdir> output_dir <nameofoutputdir>
+   python sam2/Step1_SAM2.1.py <nameofinputdir> <nameofoutputdir>
    ```
 5. Step2: Extraction of dimensional and shape features (.csv file) and seed count (.xlsx file) from binary masks and metdata file from the output of Step1: 
 
@@ -127,7 +127,7 @@ The python script (Step3_color.py), takes the .csv file of dimensional and shape
 (4.,5.,6.) Run the CLI as:
 
    ```bash
-   python sam2/Step1_SAM2.1.py input_dir faba_images output_dir output_SAM
+   python sam2/Step1_SAM2.1.py faba_images output_SAM
 
    python Step2_SAM2.1.py output_SAM output_FE
 
