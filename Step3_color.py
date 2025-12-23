@@ -26,10 +26,35 @@ Key steps:
    - Finds the most frequent RGB color, excluding blue shades.
    - Converts the RGB to the closest CSS4 color name using the CIE Lab color space.
 
-3. Output:
+3. 1. Color Calibration:
+
+Detects a calibration image with a 24-patch color card.
+
+Measures average RGB values of patches and compares them to reference RGBs.
+
+Computes a Color Correction Matrix (CCM) using linear regression.
+
+Applies CCM to all images and saves corrected versions.
+
+Records calibration accuracy (mean and max ΔE).
+
+2. Dominant Color Extraction:
+
+For each bounding box, extracts the region of interest (ROI) from the corrected image.
+
+Finds the most frequent RGB color, excluding blue shades.
+
+Converts the RGB to the closest CSS4 color name using the CIE Lab color space.
+
+3. Thousand Grain Weight (TGW) Prediction:
+
+Predicts Thousand Grain Weight (TGW, g) using a predefined linear regression model.
+
+4. Output:
    - Adds two new columns to the bounding box CSV:
        - 'RGB value of Seed': dominant RGB value
        - 'color_seeds': corresponding CSS4 color name
+       - 'TGW(g)': predicted Thousand Grain Weight (g)
    - Saves the updated CSV as 'FE_Color.csv' in the output folder.
 
 Usage:
@@ -181,19 +206,12 @@ def main():
         img_bgr = cv2.imread(str(p))
         img_rgb = cv2.cvtColor(img_bgr, cv2.COLOR_BGR2RGB)
         corrected_rgb = apply_ccm(img_rgb, ccm)
-        # Save corrected
         out_path = corrected_dir / p.name
         cv2.imwrite(str(out_path), cv2.cvtColor(corrected_rgb, cv2.COLOR_RGB2BGR))
-        # Measure deltaE on card
         card_corr = crop_color_card(corrected_rgb)
         measured_corr = measure_color_card_patches(card_corr)
         meanE, maxE = compute_deltaE(measured_corr, REFERENCE_RGBS)
         calibration_records.append({"Image":p.name,"Mean_DeltaE":meanE,"Max_DeltaE":maxE})
-    
-    # # Save calibration CSV
-    # calib_csv = output_folder / "calibration_clusters.csv"
-    # pd.DataFrame(calibration_records).to_csv(calib_csv,index=False)
-    # print("Saved calibration CSV:", calib_csv)
     
     # Extract dominant seed colors
     bbox_csv = find_first_csv(output_folder)
@@ -215,20 +233,40 @@ def main():
             if img_path is None: raise FileNotFoundError(f"No image for Class {cls}")
             img = cv2.cvtColor(cv2.imread(str(img_path)), cv2.COLOR_BGR2RGB)
             dom = get_dominant_color_excluding_blue(img, x,y,w,h)
-            rgb_values.append([int(c) for c in dom])   # <-- ensure [R,G,B] format
+            rgb_values.append([int(c) for c in dom])
             color_names.append(rgb_to_css4_color_name(dom))
         except Exception as e:
-            print(f"Warning row {idx}: {e}", file=sys.stderr)
+            print(f"Warning row {idx}: {e}")
             rgb_values.append([0,0,0])
             color_names.append("unknown")
     
     df_bbox["RGB value of Seed"] = rgb_values
     df_bbox["color_seeds"] = color_names
+
+    # -------------------------
+    # Calculate Thousand Grain Weight (TGW)
+    # -------------------------
+    required_cols = ['Area-SAM(mm2)','Width-SAM(mm)','Length-SAM(mm)',
+                     'Circularity-SAM','Aspect Ratio']
+    if all(col in df_bbox.columns for col in required_cols):
+        df_bbox['TGW(g)'] = (
+            296.9785397519971
+            + (5.5020 * df_bbox['Area-SAM(mm2)'])
+            + (18.4537 * df_bbox['Width-SAM(mm)'])
+            + (-17.3898 * df_bbox['Length-SAM(mm)'])
+            + (-607.6333 * df_bbox['Circularity-SAM'])
+            + (344.1165 * df_bbox['Aspect Ratio'])
+        )
+        print("Added 'TGW(g)' column to DataFrame")
+    else:
+        missing = [col for col in required_cols if col not in df_bbox.columns]
+        print(f"⚠️ Cannot compute TGW(g). Missing columns: {missing}")
+
+    # Save final CSV
     fe_csv = output_folder / "FE_Color.csv"
     df_bbox.to_csv(fe_csv,index=False)
-    print("Saved FE_Color.csv:", fe_csv)
-    
-    print("\n✅ Pipeline complete.")
+    print("Saved FE_Color.csv with TGW(g):", fe_csv)
+    print("Pipeline complete.")
 
 # ---------------------- RUN ----------------------
 
