@@ -246,14 +246,14 @@ def main():
     # -------------------------
     # Calculate Thousand Grain Weight (TGW)
     # -------------------------
-    required_cols = ['Area-SAM(mm2)','Width-SAM(mm)','Length-SAM(mm)',
+    required_cols = ['Area-SAM_taubin(mm2)','Width-SAM_taubin(mm)','Length-SAM_taubin(mm)',
                      'Circularity-SAM','Aspect Ratio']
     if all(col in df_bbox.columns for col in required_cols):
         df_bbox['TGW(g)'] = (
             296.9785397519971
-            + (5.5020 * df_bbox['Area-SAM(mm2)'])
-            + (18.4537 * df_bbox['Width-SAM(mm)'])
-            + (-17.3898 * df_bbox['Length-SAM(mm)'])
+            + (5.5020 * df_bbox['Area-SAM_taubin(mm2)'])
+            + (18.4537 * df_bbox['Width-SAM_taubin(mm)'])
+            + (-17.3898 * df_bbox['Length-SAM_taubin(mm)'])
             + (-607.6333 * df_bbox['Circularity-SAM'])
             + (344.1165 * df_bbox['Aspect Ratio'])
         )
