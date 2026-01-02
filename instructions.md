@@ -17,7 +17,7 @@ project-folder/
 │-- Step1_SAM2.1.py    # Script for generating masks and metadata file using SAM2.1 model on images       
 │-- Step2_SAM2.1.py    # Script for extracting dimensional and shape features of beans and seed count
 │-- Step3_color.py     # Script for extracting color name and RGB value from images
-│-- harpreet_scripts   # Scripts for data analysis and images
+│-- helper_scripts   # Scripts for data analysis and images
 ```
 
 ## Installation
