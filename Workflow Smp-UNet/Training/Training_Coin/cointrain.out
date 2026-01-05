@@ -1,0 +1,26 @@
+Epoch 01/20 | Train Loss: 1.3001 | Val Loss: 1.1531 | Dice: 0.8734
+Epoch 02/20 | Train Loss: 1.1139 | Val Loss: 1.0843 | Dice: 0.8658
+Epoch 03/20 | Train Loss: 1.0632 | Val Loss: 1.0486 | Dice: 0.9556
+Epoch 04/20 | Train Loss: 1.0376 | Val Loss: 1.0275 | Dice: 0.9648
+Epoch 05/20 | Train Loss: 1.0205 | Val Loss: 1.0144 | Dice: 0.9693
+Epoch 06/20 | Train Loss: 1.0103 | Val Loss: 1.0070 | Dice: 0.9571
+Epoch 07/20 | Train Loss: 1.0032 | Val Loss: 0.9998 | Dice: 0.9667
+Epoch 08/20 | Train Loss: 0.9967 | Val Loss: 0.9939 | Dice: 0.9792
+Epoch 09/20 | Train Loss: 0.9931 | Val Loss: 0.9911 | Dice: 0.9790
+Epoch 10/20 | Train Loss: 0.9890 | Val Loss: 0.9889 | Dice: 0.9747
+Epoch 11/20 | Train Loss: 0.9865 | Val Loss: 0.9864 | Dice: 0.9785
+Epoch 12/20 | Train Loss: 0.9847 | Val Loss: 0.9840 | Dice: 0.9778
+Epoch 13/20 | Train Loss: 0.9832 | Val Loss: 0.9824 | Dice: 0.9843
+Epoch 14/20 | Train Loss: 0.9814 | Val Loss: 0.9797 | Dice: 0.9892
+Epoch 15/20 | Train Loss: 0.9814 | Val Loss: 0.9791 | Dice: 0.9861
+Epoch 16/20 | Train Loss: 0.9798 | Val Loss: 0.9789 | Dice: 0.9856
+Epoch 17/20 | Train Loss: 0.9797 | Val Loss: 0.9779 | Dice: 0.9893
+Epoch 18/20 | Train Loss: 0.9792 | Val Loss: 0.9768 | Dice: 0.9867
+Epoch 19/20 | Train Loss: 0.9788 | Val Loss: 0.9779 | Dice: 0.9894
+Epoch 20/20 | Train Loss: 0.9781 | Val Loss: 0.9789 | Dice: 0.9900
+
+✅ Training complete
+📊 Metrics table saved: coin_training_metrics.csv
+📈 Metric plots saved in: graphs/
+🧮 Confusion matrices saved: coin_cm_train.png coin_cm_val.png
+💾 Model saved: coin_unet_mitb0_coin.pth
