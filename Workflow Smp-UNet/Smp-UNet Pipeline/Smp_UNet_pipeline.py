@@ -1,3 +1,5 @@
+
+# Cli to run the script: python ./Smp_UNet_pipeline.py --images faba_images --bean_model smp_unet_mitb0_faba.pth --coin_model coin_unet_mitb0_coin.pth --coin_diameter_mm 23.88
 # --------------------------- 
 # Auto-install required packages if missing
 # ---------------------------
