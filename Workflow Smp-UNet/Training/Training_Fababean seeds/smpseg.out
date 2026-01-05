@@ -1,0 +1,55 @@
+Epoch 01/50 | Train Loss: 1.3152 | Val Loss: 1.1568 | Dice: 0.9117
+Epoch 02/50 | Train Loss: 1.0950 | Val Loss: 1.0602 | Dice: 0.9495
+Epoch 03/50 | Train Loss: 1.0270 | Val Loss: 1.0148 | Dice: 0.9519
+Epoch 04/50 | Train Loss: 0.9907 | Val Loss: 0.9866 | Dice: 0.9731
+Epoch 05/50 | Train Loss: 0.9691 | Val Loss: 0.9701 | Dice: 0.9666
+Epoch 06/50 | Train Loss: 0.9545 | Val Loss: 0.9581 | Dice: 0.9752
+Epoch 07/50 | Train Loss: 0.9451 | Val Loss: 0.9504 | Dice: 0.9779
+Epoch 08/50 | Train Loss: 0.9382 | Val Loss: 0.9453 | Dice: 0.9797
+Epoch 09/50 | Train Loss: 0.9335 | Val Loss: 0.9411 | Dice: 0.9826
+Epoch 10/50 | Train Loss: 0.9301 | Val Loss: 0.9382 | Dice: 0.9825
+Epoch 11/50 | Train Loss: 0.9272 | Val Loss: 0.9358 | Dice: 0.9835
+Epoch 12/50 | Train Loss: 0.9249 | Val Loss: 0.9338 | Dice: 0.9848
+Epoch 13/50 | Train Loss: 0.9233 | Val Loss: 0.9325 | Dice: 0.9837
+Epoch 14/50 | Train Loss: 0.9218 | Val Loss: 0.9316 | Dice: 0.9824
+Epoch 15/50 | Train Loss: 0.9207 | Val Loss: 0.9302 | Dice: 0.9853
+Epoch 16/50 | Train Loss: 0.9198 | Val Loss: 0.9293 | Dice: 0.9854
+Epoch 17/50 | Train Loss: 0.9190 | Val Loss: 0.9288 | Dice: 0.9803
+Epoch 18/50 | Train Loss: 0.9182 | Val Loss: 0.9279 | Dice: 0.9861
+Epoch 19/50 | Train Loss: 0.9176 | Val Loss: 0.9275 | Dice: 0.9869
+Epoch 20/50 | Train Loss: 0.9175 | Val Loss: 0.9270 | Dice: 0.9870
+Epoch 21/50 | Train Loss: 0.9167 | Val Loss: 0.9265 | Dice: 0.9878
+Epoch 22/50 | Train Loss: 0.9163 | Val Loss: 0.9262 | Dice: 0.9860
+Epoch 23/50 | Train Loss: 0.9160 | Val Loss: 0.9258 | Dice: 0.9875
+Epoch 24/50 | Train Loss: 0.9156 | Val Loss: 0.9255 | Dice: 0.9874
+Epoch 25/50 | Train Loss: 0.9153 | Val Loss: 0.9253 | Dice: 0.9860
+Epoch 26/50 | Train Loss: 0.9150 | Val Loss: 0.9250 | Dice: 0.9889
+Epoch 27/50 | Train Loss: 0.9149 | Val Loss: 0.9248 | Dice: 0.9882
+Epoch 28/50 | Train Loss: 0.9146 | Val Loss: 0.9247 | Dice: 0.9883
+Epoch 29/50 | Train Loss: 0.9144 | Val Loss: 0.9246 | Dice: 0.9883
+Epoch 30/50 | Train Loss: 0.9143 | Val Loss: 0.9243 | Dice: 0.9889
+Epoch 31/50 | Train Loss: 0.9139 | Val Loss: 0.9242 | Dice: 0.9868
+Epoch 32/50 | Train Loss: 0.9138 | Val Loss: 0.9240 | Dice: 0.9894
+Epoch 33/50 | Train Loss: 0.9138 | Val Loss: 0.9240 | Dice: 0.9882
+Epoch 34/50 | Train Loss: 0.9137 | Val Loss: 0.9238 | Dice: 0.9897
+Epoch 35/50 | Train Loss: 0.9135 | Val Loss: 0.9237 | Dice: 0.9895
+Epoch 36/50 | Train Loss: 0.9143 | Val Loss: 0.9318 | Dice: 0.9524
+Epoch 37/50 | Train Loss: 0.9146 | Val Loss: 0.9237 | Dice: 0.9886
+Epoch 38/50 | Train Loss: 0.9135 | Val Loss: 0.9235 | Dice: 0.9893
+Epoch 39/50 | Train Loss: 0.9133 | Val Loss: 0.9234 | Dice: 0.9895
+Epoch 40/50 | Train Loss: 0.9132 | Val Loss: 0.9234 | Dice: 0.9887
+Epoch 41/50 | Train Loss: 0.9130 | Val Loss: 0.9233 | Dice: 0.9872
+Epoch 42/50 | Train Loss: 0.9130 | Val Loss: 0.9232 | Dice: 0.9891
+Epoch 43/50 | Train Loss: 0.9130 | Val Loss: 0.9233 | Dice: 0.9867
+Epoch 44/50 | Train Loss: 0.9130 | Val Loss: 0.9234 | Dice: 0.9860
+Epoch 45/50 | Train Loss: 0.9129 | Val Loss: 0.9231 | Dice: 0.9893
+Epoch 46/50 | Train Loss: 0.9128 | Val Loss: 0.9231 | Dice: 0.9882
+Epoch 47/50 | Train Loss: 0.9126 | Val Loss: 0.9230 | Dice: 0.9893
+Epoch 48/50 | Train Loss: 0.9127 | Val Loss: 0.9231 | Dice: 0.9890
+Epoch 49/50 | Train Loss: 0.9126 | Val Loss: 0.9229 | Dice: 0.9895
+Epoch 50/50 | Train Loss: 0.9126 | Val Loss: 0.9229 | Dice: 0.9890
+Training complete
+Metrics table: training_performance_metrics.csv
+Metric plots: plots/
+Confusion matrices: confusion_matrix_train.png, confusion_matrix_val.png
+Model saved: smp_unet_mitb0_faba.pth
