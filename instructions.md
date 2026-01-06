@@ -47,6 +47,7 @@ project-folder/
    ```bash
    conda activate fababean_env
    ```
+### For SAM2.1 Feature extraction pipeline
 
 3. Clone SAM 2 Github Repository, checkpoints and Step1_SAM2.1.py 
 
@@ -135,7 +136,27 @@ The python script (Step3_color.py), takes the .csv file of dimensional and shape
 
    ```
 
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+### For Smp-UNet (trained models with SAM2.1 Masks) feature extraction pipeline
+---
 
+## Seed Phenotyping Pipeline Execution
+
+The Smp-UNet seed phenotyping workflow is executed using a single command-line script that performs deep learning–based seed and coin segmentation, pixel-to-millimeter scale calibration, seed counting, and morphological feature extraction.
+
+### Command-line usage
+
+```bash
+python Trained_Smp_UNet.py \
+  --images faba_images \
+  --bean_model smp_unet_mitb0_faba.pth \
+  --coin_model coin_unet_mitb0_coin.pth \
+  --coin_diameter_mm 23.88
+
+```
+### Description
+
+The script loads pretrained SMP-UNet models with MIT-B0 encoders for seed and coin segmentation. For each input image, the coin mask is used to compute a pixel-to-millimeter conversion factor based on the known coin diameter. Seed masks are generated, post-processed using connected-component analysis, and used to count individual seeds and extract morphological and shape features. Required Python dependencies are automatically installed if missing.
 
 ## Dependencies
 
