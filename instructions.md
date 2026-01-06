@@ -139,9 +139,6 @@ The python script (Step3_color.py), takes the .csv file of dimensional and shape
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ### For Smp-UNet (trained models with SAM2.1 Masks) feature extraction pipeline
 ---
-
-## Seed Phenotyping Pipeline Execution
-
 The Smp-UNet seed phenotyping workflow is executed using a single command-line script that performs deep learning–based seed and coin segmentation, pixel-to-millimeter scale calibration, seed counting, and morphological feature extraction.
 
 ### Command-line usage
