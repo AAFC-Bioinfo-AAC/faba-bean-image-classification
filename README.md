@@ -3,7 +3,7 @@
 [installation and usage instructions](/instructions.md)  
 
 
-# Faba bean feature extraction pipeline from WGRF-faba bean images
+# Faba bean feature extraction pipeline from WGRF-faba bean images 
 
 ## Overview
 
@@ -17,7 +17,7 @@ The images of faba beans were captured according to the Standard Operating Proto
 
 Figure 1. Example of Faba bean images Vf1-1-2 (image shape=6000, 4000, 3) with faba bean seeds, colorcard, coin, label and ruler     
 
-
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------
 ### Segmentanything 2.1 (MetaAI) Model used for image segmentation
 
 [Segment Anything Model 2](https://ai.meta.com/sam2/) (SAM 2.1) is an advanced segmentation model designed to work seamlessly with both images and videos, treating a single image as a one-frame video. This work introduces a new task, model, and dataset aimed at improving segmentation performance. SAM 2 trained on SA-V dataset provides strong performance across a wide range of tasks. In image segmentation, SAM2 model is reported to be more accurate and 6 times faster than the Segment Anything Model (SAM). 
@@ -57,6 +57,35 @@ The features that have been extracted through this pipeline are:
 4.	**Mass prediction (1)**: TGW(g)
 5.	**Seed count**: Number of seeds in image
 
+------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+### Smp-UNet(Trained using SAM2.1 generate Masks) Pipeline for Faba bean fetaure extraction from images
+
+We present a deep learning–based workflow for automated segmentation, enumeration, and phenotypic feature extraction of Faba bean seeds from RGB images. The pipeline utilizes SAM2.1 to generate initial instance-level masks, which serve as supervisory labels for training **SMP-UNet encoder–decoder models** dedicated to seed and coin segmentation. Segmentation of the reference coin enables **pixel-to-millimeter scale calibration**, while seed masks are post-processed for automated counting and extraction of morphological traits.
+
+## A Quick Overview
+
+<img src="./helper_scripts/Images/Smp-UNet-Workflow3.jpg" alt="Figure 3" width="800">
+
+Figure 3: Deep learning–based workflow for automated faba bean seed segmentation and phenotypic feature extraction. 
+(A.) Training workflow illustrating the generation of binary segmentation masks using SAM2.1 for seeds and reference coins, followed by dataset preparation, data augmentation, and supervised training of two independent SMP-UNet models with MIT-B0 encoders for seed and coin segmentation. (B.) Inference and analysis workflow showing application of pretrained models to unseen images, coin-based pixel-to-millimeter scale calibration, seed segmentation and post-processing, connected-component analysis for seed separation and counting, and extraction of morphological features including area, length, width, and perimeter.
+
+## Outputs
+
+* Binary masks (PNG)
+* Seed counts (CSV)
+* Per-seed morphological measurements (CSV)
+
+## Methods Summary
+
+The training process begins with RGB images containing Faba bean seeds alongside a reference coin. SAM2.1 generates preliminary instance-level masks for both seeds and coins, which are subsequently filtered and merged to produce binary ground truth masks. These masks are used to train two independent **SMP-UNet models** with **MIT-B0 encoders**, enabling precise segmentation of seeds and coins.
+
+## Workflow
+After inference, pretrained models are applied to previously unseen images to generate binary segmentation masks. Coin segmentation outputs provide robust pixel-to-millimeter calibration, ensuring quantitative trait measurements are physically meaningful. Seed masks are further post-processed to isolate individual seeds, followed by automated seed counting and extraction of morphological features, including area, length, width, and perimeter.
+
+This pipeline produces fast, scalable, reproducible image- and object-level outputs, facilitating downstream phenotypic analyses and enabling high-throughput assessment of Faba bean seed traits.
+
+
 ## 🙏 Acknowledgements
 
 🤝 We extend our sincere appreciation to our mentors, collaborators, and colleagues at Agriculture and Agri-Food Canada (AAFC) for their continued guidance, support, and valuable contributions throughout this project:
@@ -82,6 +111,7 @@ The features that have been extracted through this pipeline are:
 •	Parisa Daeijvad – Ph.D. Research Student, Lethbridge Research and Development Centre, AAFC
 
 🌾We also gratefully acknowledge the Western Grains Research Foundation (WGRF), Canada, for their funding and support, which made this work possible.
+
 
 
 
