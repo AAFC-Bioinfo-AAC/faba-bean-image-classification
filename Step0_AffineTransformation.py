@@ -241,7 +241,8 @@ for name, img in images:
         M_final,
         (x_max - x_min, y_max - y_min),
         flags=cv2.INTER_LINEAR,
-        borderMode=cv2.BORDER_REPLICATE
+        borderMode=cv2.BORDER_CONSTANT, 
+        borderValue=(0, 0, 0)
     )
 
     # ---------------------------------------------------------
