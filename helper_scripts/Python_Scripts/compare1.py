@@ -71,8 +71,17 @@ if not os.path.exists(output_folder):
 
 
 # Read the image
-image = cv2.imread('SAM_compare/Faba-Seed-CC_Vf1-1-2.JPG')
-image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+script_dir = os.path.dirname(os.path.abspath(__file__))
+img_path = os.path.normpath(os.path.join(script_dir, '..', '..', 'Data', 'Faba-Seed-CC_Vf1-1-2.JPG'))
+
+if os.path.exists(img_path):
+    image = cv2.imread(img_path)
+    if image is None:
+        print("Failed to load image with OpenCV (corrupt/unsupported format)")
+    else:
+        image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB) 
+else:
+    print("Image path does not exist:", img_path)
 
 #Crop the upperpart of the image having the colorcard
 image = crop(image, ((2000, 800), (50, 50), (0,0)), copy=False)
