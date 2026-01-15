@@ -19,8 +19,10 @@ from skimage.feature import peak_local_max
 
 
 # Load the image
+script_dir = os.path.dirname(os.path.abspath(__file__))
+img_path = os.path.normpath(os.path.join(script_dir, '..', '..', 'Data', 'Faba-Seed-CC_Vf1-1-2.JPG'))
 
-image = cv2.imread('SAM_compare/Faba-Seed-CC_Vf1-1-2.JPG')
+image = cv2.imread(img_path)
 image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
 #Crop the upperpart of the image having the colorcard
@@ -78,6 +80,10 @@ plt.subplot(235), plt.imshow(sure_fg, cmap='gray'), plt.title('Sure Foreground')
 plt.subplot(236), plt.imshow(cv2.cvtColor(original_image, cv2.COLOR_BGR2RGB)), plt.title('Contours')
 plt.tight_layout()
 plt.show()
-plt.savefig('SAM_compare/Watershed_opencv')
+
+# Save the plot to the same directory as the script
+output_path = os.path.join(script_dir, 'Watershed_opencv.png')  # add extension
+plt.savefig(output_path)
+print(f"Plot saved to {output_path}")
 
 
