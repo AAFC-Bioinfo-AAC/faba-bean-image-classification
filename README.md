@@ -13,7 +13,7 @@ This work provides a workflow for running faba bean feature extraction pipeline 
 
 The images of faba beans were captured according to the Standard Operating Protocol (Figure 1).
 
-<img src="./helper_scripts/Images/Faba-Seed-CC_Vf1-1-2.JPG" alt="Figure 1" width="200">
+<img src="./helper_scripts/Images/Flowchart_Manuscript.jpg" alt="Figure 1" width="200">
 
 Figure 1. Example of Faba bean images Vf1-1-2 (image shape=6000, 4000, 3) with faba bean seeds, colorcard, coin, label and ruler     
 
@@ -111,6 +111,7 @@ This pipeline produces fast, scalable, reproducible image- and object-level outp
 •	Parisa Daeijvad – Ph.D. Research Student, Lethbridge Research and Development Centre, AAFC
 
 🌾We also gratefully acknowledge the Western Grains Research Foundation (WGRF), Canada, for their funding and support, which made this work possible.
+
 
 
 
