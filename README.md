@@ -28,7 +28,7 @@ The novelty of this work lies in the utilization of SegmentAnything 2.1 for imag
 
 ## 🔥 A Quick Overview
 
-<img src="./helper_scripts/Images/Flowchart_Manuscript.JPG" alt="Figure 2" width="800">
+<img src="./helper_scripts/Images/Flowchart_Manuscript.jpg" alt="Figure 2" width="800">
 
 Figure 2: Flowchart for Faba bean feature extraction pipeline
 
@@ -111,6 +111,7 @@ This pipeline produces fast, scalable, reproducible image- and object-level outp
 •	Parisa Daeijvad – Ph.D. Research Student, Lethbridge Research and Development Centre, AAFC
 
 🌾We also gratefully acknowledge the Western Grains Research Foundation (WGRF), Canada, for their funding and support, which made this work possible.
+
 
 
 
