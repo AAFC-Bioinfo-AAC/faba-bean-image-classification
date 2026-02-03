@@ -36,6 +36,29 @@ from skimage import measure
 from skimage.measure import regionprops_table
 from circle_fit import taubinSVD
 
+def evaluate_coin_mask(mask):
+    # Ensure uint8 binary image
+    mask_u8 = (mask > 0).astype(np.uint8)
+
+    num_labels, labels, stats, _ = cv2.connectedComponentsWithStats(
+        mask_u8, connectivity=8
+    )
+
+    # stats: [label, x, y, w, h, area]
+    areas = stats[1:, cv2.CC_STAT_AREA]  # skip background
+
+    if len(areas) == 0:
+        return 0.0, 0
+
+    largest_area = areas.max()
+    total_area = areas.sum()
+
+    dominant_ratio = largest_area / total_area
+    num_components = len(areas)
+
+    return dominant_ratio, num_components
+
+
 def classify_shape(row):
     """
     Identifies the shape of beans based on the shapefactors.
@@ -93,8 +116,29 @@ def process_SAMmasks(SAM_masks, output_folder):
         # Identify coin mask(s) for standardization
         df_metadata_coin = df_metadata[(df_metadata['bbox_x0'] >= 3000) & (df_metadata['area'] >= 200000)]
         Mask_index1 = df_metadata_coin.index.tolist()
-        Mask_index = Mask_index1[:1]  # only first coin
-        print('Index of coin mask is', Mask_index)
+        # Mask_index = Mask_index1[:1]  # only first coin
+        # print('Index of coin mask is', Mask_index)
+
+        # Load coin mask for calibration using regionprops 
+        best_mask_idx = None 
+        best_score = -1 
+        for idx in Mask_index1: 
+            mask_path = os.path.join(subfolder_path, f'{idx}.png') 
+            mask = cv2.imread(mask_path, cv2.IMREAD_GRAYSCALE) 
+            best_mask_idx = idx 
+            if mask is None: 
+                continue 
+            dominant_ratio, num_components = evaluate_coin_mask(mask) 
+            if num_components == 1: 
+                break # Ideal case 
+        
+        # Load coin mask for calibration using regionprops
+        coin_file_path = os.path.join(subfolder_path, f'{best_mask_idx}.png') 
+        mask_coin = cv2.imread(coin_file_path, cv2.IMREAD_GRAYSCALE)
+
+        label_coin = measure.label(mask_coin)
+        props_coin = regionprops_table(label_coin, properties=('area','perimeter','axis_major_length','axis_minor_length'))
+        df_coin = pd.DataFrame(props_coin).iloc[0]
 
         # Remove non-bean masks based on coordinates, size, or area
         conditions = [
@@ -117,13 +161,6 @@ def process_SAMmasks(SAM_masks, output_folder):
         circularity_threshold = 0.7
         df_list = []
 
-        # Load coin mask for calibration using regionprops
-        coin_file_path = os.path.join(subfolder_path, f'{Mask_index[0]}.png')
-        mask_coin = cv2.imread(coin_file_path, cv2.IMREAD_GRAYSCALE)
-        label_coin = measure.label(mask_coin)
-        props_coin = regionprops_table(label_coin, properties=('area','perimeter','axis_major_length','axis_minor_length'))
-        df_coin = pd.DataFrame(props_coin).iloc[0]
-
         # Calibration constants
         Length_coin_mm = 23.88
         width_coin_mm = 23.88
@@ -142,6 +179,10 @@ def process_SAMmasks(SAM_masks, output_folder):
         perimeter_mm = (2 * np.pi * Length_coin_mm) / 2
         perimeter_pixels = df_coin['perimeter']
         Calibration_factor_perimeter = perimeter_mm / perimeter_pixels
+
+        # print calibration factors
+        print("Calibration factors:")
+        print(f"Original SAM - Area: {Calibration_factor_area}, Length: {Calibration_factor_length}, Width: {Calibration_factor_width}, Perimeter: {Calibration_factor_perimeter}")
 
         # --- Process each bean mask ---
         for mask_filename in mask_filenames:
@@ -210,7 +251,10 @@ def process_SAMmasks(SAM_masks, output_folder):
 
         # Taubin SVD
         contours_coin, _ = cv2.findContours(mask_coin, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
-        cnt = contours_coin[0]
+        
+        # cnt = contours_coin[0]
+        cnt = max(contours_coin, key=cv2.contourArea)
+
         pts = np.vstack(cnt).squeeze()
         xc, yc, radius_pixels, sigma = taubinSVD(pts)
         Area_standard_coin_pixels_taubin = np.pi * radius_pixels**2
