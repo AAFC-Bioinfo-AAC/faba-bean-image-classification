@@ -98,11 +98,28 @@ def resolve_image_folder():
     return default_dir, "script-relative default", known.max_images
 
 # =============================================================
-# Output directories
+# Output directories (CLI / ENV / default)
 # =============================================================
+import argparse
 
-OUTPUT_IMG_DIR = "../corrected_images_affine"
-OUTPUT_MASK_DIR = "../corrected_images_mask_affine"
+parser = argparse.ArgumentParser(add_help=False)
+parser.add_argument("--out-img-dir", default=None)
+parser.add_argument("--out-mask-dir", default=None)
+known, _ = parser.parse_known_args()
+
+script_dir = os.path.dirname(os.path.abspath(__file__))
+
+OUTPUT_IMG_DIR = (
+    known.out_img_dir
+    or os.environ.get("AFFINE_IMG_DIR")
+    or os.path.abspath(os.path.join(script_dir, "..", "corrected_images_affine"))
+)
+
+OUTPUT_MASK_DIR = (
+    known.out_mask_dir
+    or os.environ.get("AFFINE_MASK_DIR")
+    or os.path.abspath(os.path.join(script_dir, "..", "corrected_images_mask_affine"))
+)
 
 os.makedirs(OUTPUT_IMG_DIR, exist_ok=True)
 os.makedirs(OUTPUT_MASK_DIR, exist_ok=True)
@@ -267,3 +284,12 @@ for name, m in masks_and_names:
     out_mask = os.path.join(OUTPUT_MASK_DIR, f"mask_{name}.png")
     cv2.imwrite(out_mask, mask_bgr)
     print(f"Wrote mask: {out_mask}")
+
+# =============================================================
+# Step0 finished, free GPU memory if Step0 used GPU 
+# ============================================================
+import torch, gc
+
+del model_cfg, checkpoint, sam2_model, predictor, mask_generator
+gc.collect()            # free Python objects
+torch.cuda.empty_cache() # free GPU memory
