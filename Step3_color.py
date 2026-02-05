@@ -28,7 +28,7 @@ Key steps:
 
 3. 1. Color Calibration:
 
-Detects a calibration image with a 24-patch color card.
+Detects a calibration image Faba-Seed-CC-Vf257-1-1 with a 24-patch color card and if image is not found, uses precalculated 'ccm' to the new images.
 
 Measures average RGB values of patches and compares them to reference RGBs.
 
@@ -179,23 +179,33 @@ def main():
     image_folder = Path(sys.argv[1]).expanduser().resolve()
     output_folder = Path(sys.argv[2]).expanduser().resolve()
     output_folder.mkdir(parents=True, exist_ok=True)
+    #Calibration image
+    calibration_filename = "Faba-Seed-CC_Vf257-1-1.JPG"
+    calib_path = image_folder / calibration_filename
+
+    if calib_path.exists():
+        print("Using calibration image:", calib_path)
+        img_bgr = cv2.imread(str(calib_path))
+        img_rgb = cv2.cvtColor(img_bgr, cv2.COLOR_BGR2RGB)
+        card = crop_color_card(img_rgb)
+        measured_rgb = measure_color_card_patches(card)
     
-    # Calibration image
-    calib_path = find_calibration_image(image_folder)
-    if calib_path is None: raise FileNotFoundError("No images found in folder")
-    print("Using calibration image:", calib_path)
+        if measured_rgb.shape[0]!=24:
+            raise ValueError("Expected 24 patches. Check crop or card visibility.")
     
-    img_bgr = cv2.imread(str(calib_path))
-    img_rgb = cv2.cvtColor(img_bgr, cv2.COLOR_BGR2RGB)
-    card = crop_color_card(img_rgb)
-    measured_rgb = measure_color_card_patches(card)
-    
-    if measured_rgb.shape[0]!=24:
-        raise ValueError("Expected 24 patches. Check crop or card visibility.")
-    
-    # Compute CCM
-    ccm = compute_ccm(measured_rgb, REFERENCE_RGBS)
-    
+        # Compute CCM
+        ccm = compute_ccm(measured_rgb, REFERENCE_RGBS)
+
+    else:
+        print(f"Calibration image '{calibration_filename}' not found.")
+        print("Proceeding with fixed CCM...")
+    # Fixed CCM matrix
+    ccm = np.array([
+        [ 1.9229723,  -0.29830503, -0.14728983],
+        [-0.5204266,   2.2728734,  -0.37359908],
+        [-0.3096156,  -0.5856135,   1.467306  ]
+    ], dtype=np.float32)
+
     # Prepare corrected folder
     corrected_dir = output_folder / "corrected_images"
     corrected_dir.mkdir(parents=True, exist_ok=True)
@@ -212,7 +222,7 @@ def main():
         measured_corr = measure_color_card_patches(card_corr)
         meanE, maxE = compute_deltaE(measured_corr, REFERENCE_RGBS)
         calibration_records.append({"Image":p.name,"Mean_DeltaE":meanE,"Max_DeltaE":maxE})
-    
+
     # Extract dominant seed colors
     bbox_csv = find_first_csv(output_folder)
     if bbox_csv is None:
