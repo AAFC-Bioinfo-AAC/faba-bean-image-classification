@@ -1,3 +1,29 @@
+# ============================================================
+# How to run
+# ============================================================
+# This script reads a Feature-Extraction CSV (FE_Color.csv) and saves plots to:
+#   <RUN_DIR>/plot_histograms/
+#
+# 1) Via the pipeline .sh (SLURM):
+#   cd faba-bean-image-classification
+#   sbatch run_pipeline_parallel.sh /path/to/raw_images
+#   # plot_histogram.py is called automatically at the end of the pipeline.
+#
+# 2) Manual run (no scheduler, no .sh):
+#   # Option A: pass CSV directly
+#   export RUN_DIR=/path/to/No#_pipeline_output
+#   python plot_histogram.py --input-csv "/path/to/No#_pipeline_output/FE/FE_Color.csv"
+#
+#   # Option B: use OUT_FE (no CLI args)
+#   export OUT_FE=/path/to/No#_pipeline_output/FE
+#   export RUN_DIR=/path/to/No#_pipeline_output
+#   python plot_histogram.py
+#
+# Notes:
+# - If RUN_DIR is not set, the script tries to pick the latest "*_pipeline_output" under ~/faba-bean-project.
+# - Output folder is always "<RUN_DIR>/plot_histograms" (created if missing).
+# ============================================================
+
 import argparse
 import pandas as pd
 import matplotlib.pyplot as plt
