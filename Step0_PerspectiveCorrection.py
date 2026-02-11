@@ -2,7 +2,7 @@
 # How to run (Step0_PerspectiveCorrection)
 # ============================================================
 # Purpose:
-# - Uses SAM2.1 automatic masks to detect the paper (bottom-left) + 3 color patches (top),
+# - Uses SAM2.1 automatic masks to detect the paper (bottom-left) + 3 color patches (top-left),
 #   estimates a homography, and writes a rectified image (padded/resized to 4000x6000).
 #
 # IMPORTANT:
@@ -42,15 +42,6 @@ from sam2.automatic_mask_generator import SAM2AutomaticMaskGenerator
 def get_mask_bbox(mask):
     ys, xs = np.where(mask > 0)
     return np.min(xs), np.min(ys), np.max(xs), np.max(ys)
-
-# def get_mask_corners(mask):
-#     x_min, y_min, x_max, y_max = get_mask_bbox(mask)
-#     return np.array([
-#         [x_min, y_min],
-#         [x_max, y_min],
-#         [x_max, y_max],
-#         [x_min, y_max]
-#     ], dtype=np.float32)
 
 def order_points(pts):
     pts = np.asarray(pts, dtype=np.float32)
@@ -332,15 +323,17 @@ mask_generator = SAM2AutomaticMaskGenerator(
 )
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--image_dir", "-i", required=True)
-parser.add_argument("--max_images", "-m", type=int, default=None)
+parser.add_argument("--image-dir", required=True)
+parser.add_argument("--out-img-dir", required=True)
+parser.add_argument("--out-mask-dir", required=True)
+parser.add_argument("--max-images", "-m", type=int, default=None)
 args = parser.parse_args()
 
 input_folder = args.image_dir
-output_folder = "../perspective_corrected_images"
-os.makedirs(output_folder, exist_ok=True)
+output_folder = args.out_img_dir
+mask_save_folder = args.out_mask_dir
 
-mask_save_folder = "../perspective_corrected_masks"
+os.makedirs(output_folder, exist_ok=True)
 os.makedirs(mask_save_folder, exist_ok=True)
 
 image_extensions = (".jpg", ".jpeg", ".png", ".tif", ".tiff")
