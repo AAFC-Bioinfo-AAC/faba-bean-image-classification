@@ -15,6 +15,14 @@ set -euo pipefail
 ### sbatch run_pipeline_parallel.sh /path/to/raw_images
 ### or use default input directory of fabean_images:
 ### sbatch run_pipeline_parallel.sh
+### to run step0 perspective transformation provide STEP0_METHOD, otherwise the default is affine:
+### STEP0_METHOD=perspective sbatch run_pipeline_parallel.sh
+
+# ---------------------------------------------------
+# Step0 method selection
+# Options: affine | perspective
+# ---------------------------------------------------
+STEP0_METHOD="${STEP0_METHOD:-affine}"
 
 # ---------------------------------------------------
 # CLI / ENV parsing
@@ -30,12 +38,12 @@ mkdir -p "$RUN_DIR"
 # ---------------------------------------------------
 # Directory layout for this run (all inside RUN_DIR)
 # ---------------------------------------------------
-AFFINE_IMG_DIR="${RUN_DIR}/images_affine"
-AFFINE_MASK_DIR="${RUN_DIR}/masks_affine"
+STEP0_IMG_DIR="${RUN_DIR}/images_step0"
+STEP0_MASK_DIR="${RUN_DIR}/masks_step0"
 OUT_SAM="${RUN_DIR}/SAM"
 OUT_FE="${RUN_DIR}/FE"
 
-mkdir -p "$AFFINE_IMG_DIR" "$AFFINE_MASK_DIR" "$OUT_SAM" "$OUT_FE"
+mkdir -p "$STEP0_IMG_DIR" "$STEP0_MASK_DIR" "$OUT_SAM" "$OUT_FE"
 
 # ---------------------------------------------------
 # Move SLURM log into run directory as <jobid>.out (wait briefly for file)
@@ -67,8 +75,8 @@ fi
 # ---------------------------------------------------
 # EXPORT for Python scripts
 # ---------------------------------------------------
-export AFFINE_IMG_DIR
-export AFFINE_MASK_DIR
+export STEP0_IMG_DIR
+export STEP0_MASK_DIR
 export OUT_FE
 export RUN_DIR
 
@@ -89,19 +97,26 @@ export OUT_FE_POST
 echo "================ PIPELINE RUN ================"
 echo "Raw input images : $RAW_INPUT_DIR"
 echo "Run directory    : $RUN_DIR"
-echo "Affine images    : $AFFINE_IMG_DIR"
-echo "Affine masks     : $AFFINE_MASK_DIR"
+echo "Step0 method     : $STEP0_METHOD"
+echo "Step0 images     : $STEP0_IMG_DIR"
+echo "Step0 masks      : $STEP0_MASK_DIR"
 echo "SAM output       : $OUT_SAM"
 echo "FE output (POST) : $OUT_FE"
 echo "SLURM log        : $DEST_LOG"
 echo "=============================================="
 
+if [[ "$STEP0_METHOD" != "affine" && "$STEP0_METHOD" != "perspective" ]]; then
+    echo "ERROR: STEP0_METHOD must be affine or perspective"
+    exit 1
+else echo "Step0 Method: $STEP0_METHOD"
+fi
 
 echo "===== PATH CHECK ====="
 pwd
 
 for f in \
     sam2/Step0_AffineTransformation.py \
+    sam2/Step0_PerspectiveCorrection.py \
     sam2/Step1_SAM2.1.py \
     Step2_SAM2.1.py \
     Step3_color.py \
@@ -120,24 +135,38 @@ echo "======================"
 
 
 # ---------------------------------------------------
-# Step 0: Affine transformation
+# Step 0: Geometric correction - affine | perspective
 # ---------------------------------------------------
-python sam2/Step0_AffineTransformation.py \
-    --image-dir "$RAW_INPUT_DIR" \
-    --out-img-dir "$AFFINE_IMG_DIR" \
-    --out-mask-dir "$AFFINE_MASK_DIR"
+if [[ "$STEP0_METHOD" == "affine" ]]; then
+
+    python sam2/Step0_AffineTransformation.py \
+        --image-dir "$RAW_INPUT_DIR" \
+        --out-img-dir "$STEP0_IMG_DIR" \
+        --out-mask-dir "$STEP0_MASK_DIR"
+
+elif [[ "$STEP0_METHOD" == "perspective" ]]; then
+
+    python sam2/Step0_PerspectiveCorrection.py \
+        --image-dir "$RAW_INPUT_DIR" \
+        --out-img-dir "$STEP0_IMG_DIR" \
+        --out-mask-dir "$STEP0_MASK_DIR"
+
+else
+    echo "ERROR: Unknown STEP0_METHOD=$STEP0_METHOD"
+    exit 1
+fi
 
 # ---------------------------------------------------
 # Step 1: SAM segmentation (parallel)
 # ---------------------------------------------------
 
 srun --mpi=pmi2 -n30 --cpus-per-task=3 --mem-per-cpu=8G python sam2/Step1_SAM2.1.py \
-    "$AFFINE_IMG_DIR" \
+    "$STEP0_IMG_DIR" \
     "$OUT_SAM" \
     --parallel
 
 # python sam2/Step1_SAM2.1.py \
-#     "$AFFINE_IMG_DIR" \
+#     "$STEP0_IMG_DIR" \
 #     "$OUT_SAM" \
 #     --parallel
 
@@ -149,7 +178,7 @@ python Step2_SAM2.1.py "$OUT_SAM" "$OUT_FE"
 # ---------------------------------------------------
 # Step 3: Color features
 # ---------------------------------------------------
-python Step3_color.py "$AFFINE_IMG_DIR" "$OUT_FE"
+python Step3_color.py "$STEP0_IMG_DIR" "$OUT_FE"
 
 # ---------------------------------------------------
 # Plots
