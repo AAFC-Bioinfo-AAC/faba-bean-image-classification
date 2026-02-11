@@ -30,8 +30,8 @@ import glob
 from sam2.build_sam import build_sam2
 from sam2.sam2_image_predictor import SAM2ImagePredictor
 import pandas as pd
-import matplotlib.pyplot as plt
 from sam2.automatic_mask_generator import SAM2AutomaticMaskGenerator
+import argparse
 
 # =============================================================
 # Utility functions
@@ -71,53 +71,51 @@ def order_points(pts):
 # Input resolution (CLI / ENV / default)
 # =============================================================
 
-def resolve_image_folder():
+def resolve_image_folder(args):
     """
-    Resolve input image directory with the following priority:
-    1. --image-dir command-line argument
+    Resolve input image directory with priority:
+    1. CLI --image-dir
     2. FABA_IMAGES_DIR environment variable
-    3. ../faba_images relative to script location
+    3. ../faba_images relative to script
     """
-    import argparse
-
-    parser = argparse.ArgumentParser(add_help=False)
-    parser.add_argument("--image-dir", "-i", default=None)
-    parser.add_argument("--max-images", "-m", type=int, default=None)
-    known, _ = parser.parse_known_args()
 
     script_dir = os.path.dirname(os.path.abspath(__file__))
-    default_dir = os.path.abspath(os.path.join(script_dir, "..", "faba_images"))
+    default_dir = os.path.abspath(
+        os.path.join(script_dir, "..", "faba_images")
+    )
 
-    if known.image_dir:
-        return os.path.abspath(known.image_dir), "--image-dir", known.max_images
+    if args.image_dir:
+        return os.path.abspath(args.image_dir), "--image-dir"
 
     env_dir = os.environ.get("FABA_IMAGES_DIR")
     if env_dir:
-        return os.path.abspath(env_dir), "FABA_IMAGES_DIR", known.max_images
+        return os.path.abspath(env_dir), "FABA_IMAGES_DIR"
 
-    return default_dir, "script-relative default", known.max_images
+    return default_dir, "script-relative default"
 
 # =============================================================
 # Output directories (CLI / ENV / default)
 # =============================================================
-import argparse
+parser = argparse.ArgumentParser()
 
-parser = argparse.ArgumentParser(add_help=False)
+parser.add_argument("--image-dir", "-i", default=None)
 parser.add_argument("--out-img-dir", default=None)
 parser.add_argument("--out-mask-dir", default=None)
-known, _ = parser.parse_known_args()
+parser.add_argument("--max-images", "-m", type=int, default=None)
+
+args = parser.parse_args()
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
 
 OUTPUT_IMG_DIR = (
-    known.out_img_dir
-    or os.environ.get("AFFINE_IMG_DIR")
+    args.out_img_dir
+    or os.environ.get("STEP0_IMG_DIR")
     or os.path.abspath(os.path.join(script_dir, "..", "corrected_images_affine"))
 )
 
 OUTPUT_MASK_DIR = (
-    known.out_mask_dir
-    or os.environ.get("AFFINE_MASK_DIR")
+    args.out_mask_dir
+    or os.environ.get("STEP0_MASK_DIR")
     or os.path.abspath(os.path.join(script_dir, "..", "corrected_images_mask_affine"))
 )
 
@@ -132,7 +130,9 @@ print(f"Affine mask output directory: {OUTPUT_MASK_DIR}")
 # Load images
 # =============================================================
 
-folder_path, source, max_images = resolve_image_folder()
+folder_path, source = resolve_image_folder(args)
+max_images = args.max_images
+
 print(f"Using images folder (source={source}): {folder_path}")
 
 image_paths = sorted(glob.glob(os.path.join(folder_path, "*.*")))
