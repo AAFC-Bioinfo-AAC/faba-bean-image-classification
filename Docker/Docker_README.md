@@ -22,8 +22,10 @@ While this image runs on a CPU (no GPU required), AI image segmentation is memor
     * ~7GB for the Docker Image.
     * Additional space for your input/output images.
 
-> **⚠️ Note on Image Resolution:**
-> To ensure stability on standard hardware, this pipeline automatically downscales high-resolution input images (e.g., 4000x6000px) by **50%** during processing. All metric calculations (mm, mm²) remain accurate due to the internal ratio-based calibration. **Please do not pre-resize your images.**
+> Note on Image Resolution and Accuracy
+This pipeline is designed to process high-resolution input images (standard 4000x6000px). To ensure stability on standard hardware, the Docker container automatically downscales these images by 50% during processing.
+
+Because of this downscaling, raw pixel measurements will differ from the full, non-containerized version of the pipeline. While ratio-based metrics (mm, mm2) remain comparable, exact results may not be 1:1 identical to the main development build. This Docker image is intended as a portable proof of concept. **Please do not pre-resize your images before running the container.**
 
 ---
 
