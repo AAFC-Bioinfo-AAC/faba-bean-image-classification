@@ -32,6 +32,11 @@ import re
 import sys
 import glob
 
+def extract_numeric_prefix(path):
+    name = os.path.basename(path)
+    match = re.match(r"(\d+)", name)
+    return int(match.group(1)) if match else 0
+
 def get_latest_run_dir(base_path):
     # Expand the user path (e.g., /home/user/...)
     full_base_path = os.path.expanduser(base_path)
@@ -49,7 +54,7 @@ def get_latest_run_dir(base_path):
 
     # Extract the number, convert to int for proper sorting, and find the max
     # We split by '_' and take the first part of the folder name
-    latest_dir = max(matching_dirs, key=lambda x: int(os.path.basename(x).split('_')[0]))
+    latest_dir = max(matching_dirs, key=extract_numeric_prefix)
     
     return latest_dir
     
@@ -89,9 +94,6 @@ DEFAULT_RUN_DIR = get_latest_run_dir(BASE_PATH)
 run_dir = os.environ.get("RUN_DIR", DEFAULT_RUN_DIR)
 print(f"Targeting directory: {run_dir}")
 
-# run_dir = os.environ.get("RUN_DIR")
-if not run_dir:
-    sys.exit("ERROR: RUN_DIR environment variable not set.")
 output_dir = os.path.join(run_dir, "plot_histograms")
 os.makedirs(output_dir, exist_ok=True)
 
