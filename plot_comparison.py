@@ -1,7 +1,7 @@
 # ============================================================
 # How to run
 # ============================================================
-# This script compares two FE_Color.csv files (pre vs post affine) against
+# This script compares two FE_Color.csv files (pre vs post Step0) against
 # ground truth and saves plots/outputs to:
 #   <RUN_DIR>/plot_comparison/
 #
@@ -12,7 +12,7 @@
 # 1) Run via the pipeline .sh (SLURM):
 #   cd faba-bean-image-classification
 #   sbatch run_pipeline_parallel.sh /path/to/raw_images
-#   # plot_comparison.py is called automatically if a pre-affine FE exists.
+#   # plot_comparison.py is called automatically if a pre-data FE exists.
 #
 # 2) Manual run (no scheduler, no .sh):
 #   cd faba-bean-image-classification   # so the ground-truth relative path works
@@ -47,9 +47,12 @@ import glob
 # ARGUMENT PARSING
 # ======================================================
 parser = argparse.ArgumentParser(description="Compare Pre/Post affine FE results against ground truth")
+parser.add_argument("--method", default=os.environ.get("STEP0_METHOD", "affine"), help="Step0 normalization method (affine or perspective)")
 parser.add_argument("--csv-pre", help="Pre-affine FE_Color.csv")
 parser.add_argument("--csv-post", help="Post-affine FE_Color.csv")
 args = parser.parse_args()
+
+method_name = args.method.lower()
 
 # ======================================================
 # RESOLVE CSV PATHS
@@ -142,6 +145,9 @@ DIMENSIONS = {
     }
 }
 
+PRE_STAGE_LABEL  = "Pre"
+POST_STAGE_LABEL = f"Post-{method_name.capitalize()}"
+
 # ======================================================
 # HELPER FUNCTIONS
 # ======================================================
@@ -201,7 +207,7 @@ gt = gt.rename(columns={
 # ======================================================
 
 merged = (
-    df_pre.merge(df_post, on="ID", suffixes=("_PreAffine", "_PostAffine"))
+    df_pre.merge(df_post, on="ID", suffixes=("_Pre", "_Post"))
           .merge(
               gt[["ID", "GT_MM_Length", "GT_MM_Width",
                    "GT_DCM_Length", "GT_DCM_Width"]],
@@ -247,8 +253,8 @@ def plot_pre_post_histogram(df, pre_col, post_col, title, xlabel):
     bins_ = np.histogram_bin_edges(combined, bins=bins)
 
     plt.figure(figsize=(7, 5))
-    plt.hist(pre,  bins=bins_, alpha=0.6, label="Pre-Affine")
-    plt.hist(post, bins=bins_, alpha=0.6, label="Post-Affine")
+    plt.hist(pre,  bins=bins_, alpha=0.6, label=PRE_STAGE_LABEL)
+    plt.hist(post, bins=bins_, alpha=0.6, label=POST_STAGE_LABEL)
 
     plt.xlabel(xlabel)
     plt.ylabel("Frequency")
@@ -297,27 +303,27 @@ def compare_pre_post(df, pre_col, post_col, gt_col, title):
 
     ax[0].scatter(gt, pre, alpha=0.5)
     ax[0].plot(lims, lims, "k--")
-    ax[0].set_title("Pre-Affine")
+    ax[0].set_title(PRE_STAGE_LABEL)
     ax[0].set_xlabel("Ground Truth (mm)")
     ax[0].set_ylabel("Predicted (mm)")
     ax[0].grid(alpha=0.2)
 
     ax[1].scatter(gt, post, alpha=0.5)
     ax[1].plot(lims, lims, "k--")
-    ax[1].set_title("Post-Affine")
+    ax[1].set_title(POST_STAGE_LABEL)
     ax[1].set_xlabel("Ground Truth (mm)")
     ax[1].grid(alpha=0.2)
 
     fig.suptitle(title)
-    plt.tight_layout()
+    fig.tight_layout(rect=[0, 0.03, 1, 0.95])  # leaves space for suptitle
     fname = safe_filename(title)
     plt.savefig(os.path.join(output_dir, f"{fname}_scatter.png"), dpi=300)
     plt.close()
 
     # ---------- Error histogram ----------
     plt.figure(figsize=(7, 5))
-    plt.hist(pre - gt,  bins=bins, alpha=0.6, label="Pre-Affine")
-    plt.hist(post - gt, bins=bins, alpha=0.6, label="Post-Affine")
+    plt.hist(pre - gt,  bins=bins, alpha=0.6, label=PRE_STAGE_LABEL)
+    plt.hist(post - gt, bins=bins, alpha=0.6, label=POST_STAGE_LABEL)
     plt.xlabel("Prediction − Ground Truth (mm)")
     plt.ylabel("Frequency")
     plt.title(f"{title} — Error Distribution")
@@ -329,14 +335,74 @@ def compare_pre_post(df, pre_col, post_col, gt_col, title):
     return m_pre, m_post
 
 # ======================================================
+# SUMMARY PLOTS FROM SAVED CSV
+# ======================================================
+def plot_summary_from_csv(csv_path, save_dir):
+
+    if not os.path.exists(csv_path):
+        print(f"Summary CSV not found: {csv_path}")
+        return
+
+    df = pd.read_csv(csv_path)
+
+    if df.empty:
+        print("Summary CSV is empty. Skipping plots.")
+        return
+
+    # consistent ordering
+    df = df.sort_values(["method", "dimension", "ground_truth"])
+
+    # readable label
+    df["label"] = (
+        df["method"] + " | " +
+        df["dimension"] + " | " +
+        df["ground_truth"]
+    )
+
+    def make_plot(metric, title, filename):
+
+        pivot = df.pivot(index="label", columns="stage", values=metric)
+
+        if PRE_STAGE_LABEL not in pivot or POST_STAGE_LABEL  not in pivot:
+            print(f"Skipping {metric} plot: missing stages.")
+            return
+
+        plt.figure(figsize=(10, 6))
+
+        plt.plot(pivot.index, pivot[PRE_STAGE_LABEL], marker='o')
+        plt.plot(pivot.index, pivot[POST_STAGE_LABEL], marker='x')
+
+        plt.xticks(rotation=90)
+        plt.title(title)
+        plt.tight_layout()
+
+        save_path = os.path.join(save_dir, filename)
+        plt.savefig(save_path, dpi=300)
+        plt.close()
+
+        print(f"Saved: {save_path}")
+
+    make_plot("rmse",
+              "RMSE Pre vs Post",
+              "rmse_comparison.png")
+
+    make_plot("mean_abs_error",
+              "Mean Absolute Error Pre vs Post",
+              "mae_comparison.png")
+
+    make_plot("correlation",
+              "Correlation Pre vs Post",
+              "correlation_comparison.png")
+
+# ======================================================
 # RUN ALL COMPARISONS
 # ======================================================
 summary = []
 
 for method in METHODS:
     for dim, meta in DIMENSIONS.items():
-        pre_col  = build_col(dim, method, "PreAffine")
-        post_col = build_col(dim, method, "PostAffine")
+        pre_col  = build_col(dim, method, "Pre")
+        post_col = build_col(dim, method, "Post")
 
         if pre_col not in merged or post_col not in merged:
             continue
@@ -362,14 +428,14 @@ for method in METHODS:
                 "method": method,
                 "dimension": dim,
                 "ground_truth": gt_name,
-                "stage": "Pre-Affine",
+                "stage": PRE_STAGE_LABEL,
                 **m_pre
             })
             summary.append({
                 "method": method,
                 "dimension": dim,
                 "ground_truth": gt_name,
-                "stage": "Post-Affine",
+                "stage": POST_STAGE_LABEL,
                 **m_post
             })
 
@@ -383,3 +449,17 @@ summary_df.to_csv(
 )
 
 print(summary_df)
+
+
+# ------------------------------------------------------
+# NEW: Generate summary plots from saved CSV
+# ------------------------------------------------------
+summary_csv_path = os.path.join(
+    output_dir,
+    "ground_truth_comparison_all_methods.csv"
+)
+
+plot_summary_from_csv(
+    summary_csv_path,
+    output_dir
+)
