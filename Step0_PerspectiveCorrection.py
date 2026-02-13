@@ -2,31 +2,76 @@
 # How to run (Step0_PerspectiveCorrection)
 # ============================================================
 # Purpose:
-# - Uses SAM2.1 automatic masks to detect the paper (bottom-left) + 3 color patches (top-left),
-#   estimates a homography, and writes a rectified image (padded/resized to 4000x6000).
+# - Uses SAM2.1 automatic masks to detect:
+#       • Paper (bottom-left region)
+#       • Three color calibration patches (top-left region)
+# - Estimates a homography and performs perspective correction.
+# - Outputs a rectified image resized and padded to exactly 4000 x 6000 pixels.
+# - Saves debug masks showing the selected regions before and after correction.
 #
 # IMPORTANT:
-# - Run from the `faba-bean-image-classification/` directory so the checkpoint path
-#   `sam2/checkpoints/sam2.1_hiera_large.pt` resolves correctly.
+# - Run from the project root directory:
+#       faba-bean-image-classification/
+#   so the checkpoint path resolves correctly:
+#       sam2/checkpoints/sam2.1_hiera_large.pt
 #
+# ------------------------------------------------------------
 # Usage:
-#   cd faba-bean-image-classification
-#   python sam2/Step0_PerspectiveCorrection.py -i /path/to/input_images
-#   python sam2/Step0_PerspectiveCorrection.py -i /path/to/input_images -m 50
+# ------------------------------------------------------------
+# cd faba-bean-image-classification
 #
-# Args:
-# -i / --image_dir   (required) input folder with images: .jpg/.jpeg/.png/.tif/.tiff
-# -m / --max_images  (optional) process only first N images (sorted by filename)
+# Basic:
+# python sam2/Step0_PerspectiveCorrection.py \
+#     --image-dir /path/to/input_images \
+#     --out-img-dir ../perspective_corrected_images \
+#     --out-mask-dir ../perspective_corrected_masks
 #
-# Outputs (relative to your current working directory; created if missing):
-#   ../perspective_corrected_images/           rectified images (same filenames as input)
-#   ../perspective_corrected_masks/    debug mask: <image>_selected_masks.png (binary merge of paper + color patches)
-#   ../perspective_corrected_masks/    corrected mask: <image>_selected_masks_corrected.png (perspective-corrected + padded to 4000x6000)
-#   NOTE: one debug mask file is saved per input image (no overwriting).
+# Limit number of processed images:
+# python sam2/Step0_PerspectiveCorrection.py \
+#     --image-dir /path/to/input_images \
+#     --out-img-dir ../perspective_corrected_images \
+#     --out-mask-dir ../perspective_corrected_masks \
+#     --max-images 50
 #
-# Next step (example):
-#   python sam2/Step1_SAM2.1.py ../perspective_corrected_images ../output_SAM_Pers_60
+# ------------------------------------------------------------
+# Arguments:
+# ------------------------------------------------------------
+# --image-dir      (required) Input folder containing images
+#                  Supported formats: .jpg .jpeg .png .tif .tiff
+#
+# --out-img-dir    (required) Output folder for perspective-corrected images
+#
+# --out-mask-dir   (required) Output folder for debug mask visualizations
+#
+# --max-images / -m (optional)
+#                  Process only the first N images (sorted by filename)
+#
+# ------------------------------------------------------------
+# Outputs:
+# ------------------------------------------------------------
+# <out-img-dir>/
+#     <image_name>.<ext>
+#         Perspective-corrected image padded to 4000x6000
+#
+# <out-mask-dir>/
+#     <image_name>_selected_masks.png
+#         Binary merged mask of detected paper + color patches
+#
+#     <image_name>_selected_masks_corrected.png
+#         Perspective-corrected merged mask aligned with output image
+#
+# NOTE:
+# - One mask pair is saved per input image (no overwriting).
+# - Output directories are created automatically if missing.
+#
+# ------------------------------------------------------------
+# Next pipeline step (example):
+# ------------------------------------------------------------
+# python sam2/Step1_SAM2.1.py \
+#     ../perspective_corrected_images \
+#     ../output_SAM_Pers_60
 # ============================================================
+
 
 import os
 import cv2
@@ -118,6 +163,18 @@ def build_square_patch_from_top(corners):
 
     return np.array([tl_dst, tr_dst, br_dst, bl_dst], dtype=np.float32)
 
+def build_straight_vertical_line(TR_BR):
+    """
+    TR_BR: (2,2) array of top-right and bottom-right corners
+    returns: (2,2) array of straightened vertical line points
+    """
+    tr, br = TR_BR
+    # Compute the straight vertical line by aligning x-coordinates
+    x = tr[0]  # Use x-coordinate of top-right corner
+    y_min = min(tr[1], br[1])
+    y_max = max(tr[1], br[1])
+    return np.array([[x, y_min], [x, y_max]], dtype=np.float32)
+
 def build_straight_paper_dst(corners):
     """
     corners: (4,2) ordered TL,TR,BR,BL (SOURCE patch corners)
@@ -162,6 +219,8 @@ def rectify_with_sam_masks(image, mask_generator: SAM2AutomaticMaskGenerator, ma
     paper_corners = order_points(get_mask_corners(paper_mask))
     # TL, TR, BR, BL
 
+    paper_TR_BR = paper_corners[[1,2]]  # TR and BR corners
+
     # -------------------------
     # 3. Detect 3 color patches (largest masks in top-left)
     # -------------------------
@@ -198,13 +257,16 @@ def rectify_with_sam_masks(image, mask_generator: SAM2AutomaticMaskGenerator, ma
     color_patch_corners = np.vstack(color_patch_corners)  # shape: (12,2)
 
     src_paper = paper_corners  # (4,2)
+    src_paper_TR_BR = paper_TR_BR  # (2,2)
     # -------------------------
     # 4. Build source points (paper + 3 patches)
     # -------------------------
     src_pts = np.vstack([src_paper, color_patch_corners]).astype(np.float32) # 4 + 12 = 16
+    src_pts_new = np.vstack([src_paper_TR_BR, color_patch_corners]).astype(np.float32) # 2 + 12 = 14
 
     # 5. Build destination points (controlled rectangle)
     dst_paper = build_straight_paper_dst(paper_corners)
+    dst_paper_TR_BR = build_straight_vertical_line(src_paper_TR_BR)
 
     dst_color_corners = []
     for cm in color_masks:
@@ -214,15 +276,16 @@ def rectify_with_sam_masks(image, mask_generator: SAM2AutomaticMaskGenerator, ma
     dst_color_corners = np.vstack(dst_color_corners)  # (12,2)
 
     dst_pts = np.vstack([dst_paper, dst_color_corners])  # (16,2)
+    dst_pts_new = np.vstack([dst_paper_TR_BR, dst_color_corners])  # (14,2)
 
     # 6. Compute homography
 
-    # H, _ = cv2.findHomography(src_paper, dst_paper, cv2.RANSAC, 3.0)
-    H, _ = cv2.findHomography(
-        src_paper,    # src
-        dst_paper,        # dst
-        method=0          # no RANSAC needed with 4 points
-    )
+    H, _ = cv2.findHomography(src_pts, dst_pts, cv2.RANSAC, 3.0)
+    # H, _ = cv2.findHomography(
+    #     src_paper,    # src
+    #     dst_paper,        # dst
+    #     method=0          # no RANSAC needed with 4 points
+    # )
 
     if H is None:
         print("⚠️ Homography failed")
