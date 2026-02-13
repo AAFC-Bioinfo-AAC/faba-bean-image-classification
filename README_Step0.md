@@ -84,3 +84,118 @@ KNOWN LIMITATIONS (CURRENT WIP)
 
 !! These limitations are being actively explored in the wip/perspective-correction branch.
    Homography using 4+ points will improve perspective correction.
+
+
+============================
+STEP 0 — Perspective Correction using SAM2.1
+============================
+
+
+Overview
+--------------------------------
+This script performs automatic perspective correction for faba bean imaging datasets using SAM2.1 automatic mask generation. It detects a reference paper sheet and three color calibration patches to compute a homography and produce standardized, rectified images.
+
+The resulting images are resized and padded to a fixed resolution of 4000 × 6000 pixels, ensuring consistent downstream processing.
+
+
+
+Method Summary
+--------------------------------
+1) Automatic Mask Generation
+   - SAM2.1 generates segmentation masks for all objects in the image.
+
+2) Reference Object Detection
+   - Paper sheet is identified using spatial and size constraints:
+      + Located in bottom-left region
+      + Large mask area (>500000 pixels)
+      + Width constraint (<2000 pixels)
+
+3) Color Patch Detection
+   - Three calibration squares detected in top-left region
+   - Constraints:
+
+      + Area between 80k and 300k pixels
+      + Near-square aspect ratio (0.8–1.2)
+      + Largest three masks selected
+
+4) Geometry Construction
+   - Paper transformed into an axis-aligned rectangle
+   - Color patches normalized into square shapes
+   - Homography computed using paper + patch corner points
+
+5) Perspective Correction
+   - Image warped using computed homography
+   - Canvas expanded to prevent cropping
+
+6) Normalization
+   - Output resized while preserving aspect ratio
+   - Zero-padded onto a 4000×6000 canvas
+
+Project structure must allow:
+--------------------------------
+sam2/checkpoints/sam2.1_hiera_large.pt
+configs/sam2.1/sam2.1_hiera_l.yaml
+
+
+Run from repository root:
+--------------------------------
+faba-bean-image-classification/
+
+Usage
+--------------------------------
+cd faba-bean-image-classification
+
+python sam2/Step0_PerspectiveCorrection.py \
+    --image-dir /path/to/input_images \
+    --out-img-dir ../perspective_corrected_images \
+    --out-mask-dir ../perspective_corrected_masks \
+    --max-images 50
+
+Argument	Required	Description
+--------------------------------
+--image-dir          Yes   Folder containing input images
+--out-img-dir        Yes   Output folder for rectified images
+--out-mask-dir       Yes   Output folder for debug masks
+--max-images / -m	   No    Process only first N images
+
+Supported formats:
+--------------------------------
+.jpg .jpeg .png .tif .tiff
+
+Outputs
+--------------------------------
+<out-img-dir>/<image_name>
+
+   - Perspective-corrected
+   - Resized + padded to 4000×6000
+   - Same filename as input
+
+Debug Masks
+----------------------------------------------------------------
+<out-mask-dir>/<image_name>_selected_masks.png
+
+
+Binary merge of detected paper + color patches
+----------------------------------------------------------------
+<out-mask-dir>/<image_name>_selected_masks_corrected.png
+
+   - Perspective-corrected version aligned with output image
+
+Failure Conditions
+--------------------------------
+The image will be skipped if:
+
+   - Paper reference not detected
+   - Fewer than three color patches found
+   - Homography computation fails
+
+Warnings are printed to console.
+
+
+Assumptions & Dataset Constraints
+----------------------------------------------------------------
+This script assumes a controlled imaging setup:
+
+- Paper reference positioned in bottom-left
+- Color patches located in top-left
+- Lighting and background allow reliable SAM segmentation

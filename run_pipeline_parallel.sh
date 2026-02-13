@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH --job-name=Parallel_Pipeline
 #SBATCH --partition=slow
-#SBATCH --cpus-per-task=3
+#SBATCH --cpus-per-task=90
 #SBATCH --mem-per-cpu=8G
 #SBATCH --ntasks=1
 #SBATCH --time=48:00:00
