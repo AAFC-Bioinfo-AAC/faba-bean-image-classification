@@ -1,6 +1,7 @@
 MIT License
 
 Copyright (c) His Majesty the King in Right of Canada, as represented by the Minister of Agriculture and Agri-Food, 2025.
+This project requires Segment Anything 2, which is licensed under Apache 2.0 and BSD-3.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -25,6 +26,7 @@ ______________________
 Licence MIT
 
 (c) Droit d’auteur — Sa Majesté le Roi du chef du Canada, représentée par le ministre de l’Agriculture et Agroalimentaire Canada, 2025.
+Ce projet nécessite Segment Anything 2, qui est distribué sous licence Apache 2.0 et BSD-3
 
 La présente autorise toute personne à obtenir gratuitement une copie 
 du présent logiciel et des documents connexes (le « logiciel »), à traiter 
