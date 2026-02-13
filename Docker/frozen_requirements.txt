@@ -1,0 +1,9 @@
+circle-fit==0.2.1
+matplotlib==3.10.8
+numpy==2.2.6
+opencv-python-headless==4.13.0.90
+openpyxl==3.1.5
+pandas==2.3.3
+scikit-image==0.25.2
+scikit-learn==1.7.2
+scipy==1.15.3
