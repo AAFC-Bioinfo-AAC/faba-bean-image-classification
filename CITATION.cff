@@ -1,0 +1,110 @@
+# =============================================================================
+# CITATION.cff — AAFC Bioinformatics Faba Bean Image Classification
+# =============================================================================
+# This file provides citation metadata for 
+# AAFC-Bioinfo-AAC/faba-bean-image-classification pipeline.
+#
+# Visit https://github.com/AAFC-Bioinfo-AAC/faba-bean-image-classification
+# to learn more about the software.
+# =============================================================================
+
+cff-version: 1.2.0
+
+message: >-
+  If you use this software, please cite it using the metadata provided below.
+
+title: >-
+  ABCC Bioinformatics Faba Bean Image Classification Repository: A Reproducible Image Classification Pipeline on Faba Beans
+
+type: software
+
+version: "1.0.0"
+
+date-released: "2025-09-11"
+
+license: MIT
+
+repository-code: "https://github.com/AAFC-Bioinfo-AAC/faba-bean-image-classification"
+
+abstract: >-
+  This work provides a workflow for running faba bean feature extraction
+  pipeline to extract the dimensional, shape and color of faba bean seeds
+  in the .csv file from the faba bean images. It presents a methodology 
+  for seed image segmentation and feature extraction using advanced
+  deep learning and image processing techniques. The Segment Anything 
+  Model 2.1 (SAM2.1) has been used for precise segmentation, while OpenCV, 
+  Scikit-Image, and Matplotlib-colors are employed to analyze the dimensional,
+  spatial, shape, and color properties of segmented seeds. The pipeline also 
+  gives the seed count in an image and annotated binary images. The pipeline 
+  has been specifically developed based on the spatial coordinates of
+  faba bean seeds, colorcard, label, ruler and coin.
+
+keywords:
+  - Faba bean
+  - Feature extraction
+  - Image analysis
+  - Deep learning
+  - Phenotyping
+  - SAM2.1 (Segment Anything Model 2.1)
+  - TGW (Thousand Grain Weight)
+  - SMP-UNet
+  - Phenotypic analysis
+  - Image segmentation
+  - OpenCV
+  - Scikit-Image
+  - reproducibility
+  - bioinformatics
+  - pipeline
+  - AAFC
+
+# ---------------------------------------------------------------------------
+# IDENTIFIERS (optional)
+# Add permanent identifiers such as DOI from Zenodo or DataCite.
+# ---------------------------------------------------------------------------
+# identifiers:
+#   - type: doi
+#     value: "10.5281/zenodo.xxxxxxx"
+
+
+authors:
+  - given-names: Rodrigo
+    family-names: Ortega Polo
+    affiliation: 'Agriculture and Agri-Food Canada (AAFC)'
+    orcid: 'https://orcid.org/0000-0003-3411-923X'
+  - given-names: Harpreet
+    family-names: Bargota
+    affiliation: 'Agriculture and Agri-Food Canada (AAFC)'
+    orcid: 'https://orcid.org/0009-0008-4584-0528'
+  - given-names: Mathew
+    family-names: Richards
+    affiliation: 'Agriculture and Agri-Food Canada (AAFC)'
+    orcid: 'https://orcid.org/0009-0007-2861-6914'
+  - given-names: Etienne
+    family-names: 'Low-Decarie '
+    affiliation: 'Agriculture and Agri-Food Canada (AAFC)'
+  - given-names: Parisa
+    family-names: Daeijavad
+    affiliation: 'Agriculture and Agri-Food Canada (AAFC)'
+    orcid: 'https://orcid.org/0000-0002-9892-9904'
+  - given-names: Hao Nan Tobey
+    family-names: Wang
+    affiliation: 'Agriculture and Agri-Food Canada (AAFC)'
+
+contact:
+ - name: "Rodrigo Ortega Polo"
+   email: "Rodrigo.OrtegaPolo@AGR.GC.CA"
+
+# ---------------------------------------------------------------------------
+# PREFERRED CITATION (optional but recommended)
+# If you have a DOI, preprint, or publication describing the software,
+# specify it here for consistent citation.
+# ---------------------------------------------------------------------------
+# preferred-citation:
+#   type: article
+#   title: "ABCC Template Repository: A reproducible pipeline framework for AAFC bioinformatics"
+#   authors:
+#     - given-names: "First"
+#       family-names: "Last"
+#   year: 2025
+#   journal: "Zenodo"
+#   doi: "00.0000/zenodo.xxxxxxx"
