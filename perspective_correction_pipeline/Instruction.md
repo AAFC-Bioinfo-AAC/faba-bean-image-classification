@@ -19,7 +19,7 @@ The pipeline performs:
 # Project Structure
 
 ```text
-perspective_pipeline/
+perspective_correction_pipeline/
 │
 ├── data/
 │   ├── images/
@@ -48,6 +48,12 @@ pip install numpy pandas matplotlib scipy scikit-image scikit-learn opencv-pytho
 
 SAM2 installation is also required.
 
+## Activate conda environment
+
+```bash
+conda activate fababean_env
+```
+
 ---
 
 # Input Data
@@ -72,10 +78,27 @@ perspective_correction_pipeline/data/Faba_Seed_Analyzer_Data_August_2024.xlsx
 
 # Running the Pipeline
 
-Run:
+Run with the default path (data/images):
 
 ```bash
-python main.py
+python perspective_correction_pipeline/main.py
+```
+
+Or:
+
+```bash
+python main.py --image_dir path/to/images --n_images number_of_images
+```
+
+Example:
+
+```bash
+python main.py --image_dir "/data/phenomics_images/faba_images" --n_images 20
+```
+
+Schedule a slurm job:
+```bash
+sbatch perspective_correction_pipeline/run.sh
 ```
 
 ---
