@@ -18,6 +18,7 @@ import glob
 import torch
 import shutil
 import warnings
+import argparse
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -34,12 +35,50 @@ from circle_fit import taubinSVD
 warnings.filterwarnings("ignore")
 
 # ============================================================
+# ARGUMENT PARSER
+# ============================================================
+
+parser = argparse.ArgumentParser(
+    description="Perspective Correction Pipeline"
+)
+
+parser.add_argument(
+    "--project_dir",
+    type=Path,
+    default=Path.cwd() / "perspective_correction_pipeline",
+    help="Project root directory"
+)
+
+parser.add_argument(
+    "--image_dir",
+    type=Path,
+    default=None,
+    help="Optional custom image directory"
+)
+
+parser.add_argument(
+    "--n_images",
+    type=int,
+    default=None,
+    help="Number of images to process (default: all)"
+)
+
+args = parser.parse_args()
+
+# ============================================================
 # CONFIG
 # ============================================================
 
-PROJECT_DIR = Path("perspective_pipeline")
+PROJECT_DIR = args.project_dir
+N_IMAGES = args.n_images
 
+# Default image location
 RAW_IMAGES = PROJECT_DIR / "data/images"
+
+# Override if user provides custom image directory
+if args.image_dir is not None:
+    RAW_IMAGES = args.image_dir
+    
 GROUNDTRUTH_XLSX = PROJECT_DIR / "data/Faba_Seed_Analyzer_Data_August_2024.xlsx"
 
 OUTPUT_DIR = PROJECT_DIR / "outputs"
@@ -315,6 +354,10 @@ def run_perspective_correction(
         glob.glob(str(raw_image_dir / "*.JPG"))
     )
 
+    # Limit number of images if requested
+    if N_IMAGES is not None:
+        image_files = image_files[:N_IMAGES]
+
     for image_path in image_files:
 
         image_name = Path(image_path).stem
@@ -370,6 +413,10 @@ def run_sam_on_directory(input_dir, output_dir):
     mask_generator = build_sam_model()
 
     image_files = sorted(glob.glob(str(input_dir / "*.JPG")))
+    
+    # Limit number of images if requested
+    if N_IMAGES is not None:
+        image_files = image_files[:N_IMAGES]
 
     for image_path in image_files:
 
